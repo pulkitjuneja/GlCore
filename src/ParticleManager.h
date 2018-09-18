@@ -9,6 +9,7 @@
 #include "Particle.h"
 #include "Shader.h"
 #include "ParticleUpdater.h"
+#include <glm/gtc/matrix_transform.hpp>
 
 enum ParticleType {billboard, mesh};
 

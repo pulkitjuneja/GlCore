@@ -22,6 +22,8 @@ add_Library(GlTestBed
         src/Engine.cpp src/Engine.h
         src/Particle.cpp
         src/Particle.h
+		src/Camera.h
+		src/Camera.cpp
         src/ParticleManager.cpp
         src/ParticleManager.h
         src/ParticleUpdater.h)
@@ -29,6 +31,7 @@ add_Library(GlTestBed
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/ext/glm)
 target_include_directories(GlTestBed PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/ext/SFML-2.4.2/include)
+
 
 target_link_libraries(GlTestBed 
 	${OPENGL_LIBRARIES} 

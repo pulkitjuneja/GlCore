@@ -4,7 +4,6 @@
 
 #include "ParticleManager.h"
 #include "ResourceManager.hpp"
-#include <glm/gtc/matrix_transform.hpp>
 #include <string>
 
 std::vector<GLfloat> billBoardVertexData = std::vector<GLfloat>{
