@@ -8,12 +8,11 @@ find_package(OpenGL REQUIRED)
 
 message ('--------'  ${CMAKE_SOURCE_DIR}/ext/sfml/include/SFML)
 
-add_executable(GlTestBed
-		main.cpp
+add_Library(GlTestBed
         src/Globals.h
         src/Mesh.cpp
         src/Mesh.h
-         src/ResourceManager.cpp
+        src/ResourceManager.cpp
         src/ResourceManager.hpp
         src/Shader.cpp
         src/Shader.h
