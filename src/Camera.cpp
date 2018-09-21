@@ -1,5 +1,3 @@
-
-
 #include "Camera.h"
 
 Camera::Camera(glm::vec3 position, glm::vec3 direction) {
@@ -10,12 +8,12 @@ Camera::Camera(glm::vec3 position, glm::vec3 direction) {
 	this->cameraUP = glm::normalize(glm::cross(-direction, right));
 }
 
-glm::mat4 & Camera::getViewMatrix()
+glm::mat4  Camera::getViewMatrix()
 {
 	return glm::lookAt(this->position, this->direction, this->up);
 }
 
-glm::mat4 & Camera::getProjectionMatrix()
+glm::mat4  Camera::getProjectionMatrix()
 {
 	return glm::perspective(glm::radians(90.0f), 4.0f / 3.0f, 0.1f, 100.0f);
 }

@@ -19,7 +19,8 @@ CTestTestfile.cmake
 #outputs
 *.a
 build
-*.lib
+Debug
+Release
 *.build
 *.cbp
 Debug

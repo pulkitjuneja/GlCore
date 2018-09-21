@@ -16,8 +16,8 @@ public:
 	glm::vec3 right;
 	glm::vec3 direction;
 	Camera(glm::vec3 position, glm::vec3 direction);
-	glm::mat4& getViewMatrix();
-	glm::mat4& getProjectionMatrix();
+	glm::mat4 getViewMatrix();
+	glm::mat4 getProjectionMatrix();
 
 	virtual void update() {};
 };
