@@ -7,7 +7,7 @@ ResourceManager* ResourceManager::instance;
 
 
 void ResourceManager::readFromFile(const std::string &fileName, char *&shaderContent) {
-	string fullPath = "";
+	string fullPath = dpath + fileName;
     cout<<fullPath<<"\n";
     ifstream shaderFile(fullPath);
     stringstream buffer;
