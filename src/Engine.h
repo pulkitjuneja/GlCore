@@ -13,6 +13,7 @@ class Engine {
 private:
     sf::Window* window;
     bool isEngineRunning = true;
+	bool setupSFML();
 
 public:
     static const GLint WIDTH = 1366, HEIGHT = 768;
@@ -22,7 +23,6 @@ public:
     virtual void update() = 0;
     virtual void render () = 0;
     void start ();
-    bool setupSFML ();
 };
 
 

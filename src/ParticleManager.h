@@ -10,14 +10,15 @@
 #include "Shader.h"
 #include "ParticleUpdater.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include "Renderable.h"
+#include "Component.h"
 
 enum ParticleType {billboard, mesh};
 
-class ParticleManager {
+class ParticleManager: public Renderable, Component {
 
     const int maxParticles = 100000;
     std::vector<Particle*> particleContainer;
-    Shader* particleShader;
     GLuint VAO ;// VAO to encapsulate the vertex attribs of the particles
 
     ParticleType particleType;
