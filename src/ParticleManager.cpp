@@ -24,7 +24,7 @@ particleUpdater(particleUpdater) {
     particleType = ParticleType::billboard;
     particleContainer = std::vector<Particle*>();
     particleContainer.reserve(maxParticles);
-    particleShader = ResourceManager::getInstance()->getShader(shaderName);
+    shader = ResourceManager::getInstance()->getShader(shaderName);
     particlePositionData.reserve(maxParticles*4);
     particleColorData.reserve(maxParticles*4);
     glGenBuffers(1,&vertexBuffer);
@@ -46,13 +46,13 @@ void ParticleManager::render() {
 
     calculateViewProjectionMatrix();
 
-    particleShader->use();
-    particleShader->setFloat3("CameraRight_worldspace", viewMatrix[0][0],viewMatrix[1][0], viewMatrix[2][0]);
-    particleShader->setFloat3("CameraUp_worldspace", viewMatrix[0][1], viewMatrix[1][1], viewMatrix[2][1]);
+    shader->use();
+    shader->setFloat3("CameraRight_worldspace", viewMatrix[0][0],viewMatrix[1][0], viewMatrix[2][0]);
+    shader->setFloat3("CameraUp_worldspace", viewMatrix[0][1], viewMatrix[1][1], viewMatrix[2][1]);
 
     glm::mat4 viewProjectionMatrix = projectionMatrix * viewMatrix;
 
-    particleShader->setMat4("VP",&viewProjectionMatrix[0][0]);
+    shader->setMat4("VP",&viewProjectionMatrix[0][0]);
 
 	if (particlePositionData.size() > 0) {
 

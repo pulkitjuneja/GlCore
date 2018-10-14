@@ -7,14 +7,12 @@
 #include "Globals.h"
 
 class Mesh {
-    GLuint VBO,VAO,EBO;
     std::vector<float> vertices;
-    std::vector<int> indices;
-    Material* mat;
 public:
-    Mesh (std::vector<float> &vertices, std::vector<int> &indices,  Material* mat);
+	std::vector<unsigned int> indices;
+	GLuint VBO, VAO, EBO;
+    Mesh (std::vector<float> &vertices, std::vector<unsigned int> &indices);
     void setupMesh();
-    void Draw();
 };
 
 
