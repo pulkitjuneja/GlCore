@@ -6,9 +6,7 @@ set(CMAKE_CXX_STANDARD 11)
 find_package(OpenGL REQUIRED)
 #find_package(GLEW REQUIRED)
 
-add_executable(GlCore
-		main.cpp
-		TestWorld.cpp
+add_library(GlCore
         src/Globals.h
         src/Mesh.cpp
         src/Mesh.h
