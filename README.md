@@ -28,7 +28,7 @@ public:
 
 For a sample application you can have alook at the particle demo I created using the library [here](https://github.com/pulkitjuneja/OpenGL-Particles)
 
-[glCore](https://github.com/pulkitjuneja/GlCore) particle manager
+![glCore](https://github.com/pulkitjuneja/GlCore)
 
 ## Dependencies
 * [SFML](https://github.com/SFML/SFML) 
