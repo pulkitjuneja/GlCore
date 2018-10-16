@@ -12,7 +12,7 @@ A minimal base framework for OpenGl based projects written in C++
 ## What it looks like
 Initializing an OpenGL application is as easy as including GlCore in your project and inheriting from the Engine class
 
-```
+```c++
 class ParticleWorld : public Engine {
 
     std::vector<ParticleManager* > managers;
@@ -28,7 +28,6 @@ public:
 
 For a sample application you can have alook at the particle demo I created using the library [here](https://github.com/pulkitjuneja/OpenGL-Particles)
 
- ![image](https://pulkitjuneja.github.io/portfolio/particles.gif)
 
 ## Dependencies
 * [SFML](https://github.com/SFML/SFML) 
