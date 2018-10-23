@@ -6,9 +6,8 @@ set(CMAKE_CXX_STANDARD 11)
 find_package(OpenGL REQUIRED)
 #find_package(GLEW REQUIRED)
 
-add_executable(GlCore
-		main.cpp
-		TestWorld.cpp
+add_library(GlCore
+
         src/Globals.h
         src/Mesh.cpp
         src/Mesh.h
@@ -31,6 +30,7 @@ add_executable(GlCore
 		src/Entity.h src/Entity.cpp
 		src/Camera.h src/Camera.cpp
 		src/EntityManager.h src/EntityManager.cpp src/Component.h
+		src/Transform.h src/Transform.cpp
         src/ParticleUpdater.h)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)

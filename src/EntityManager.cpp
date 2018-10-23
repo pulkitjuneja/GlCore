@@ -24,6 +24,8 @@ void EntityManager::renderEntity(Entity* ent)
 {
 	glm::mat4 viewMatrix = mainCamera->getViewMatrix();
 	glm::mat4 projectionMatrix = mainCamera->getProjectionMatrix();
+	glm::mat4 transformationMatrix = ent->transfrom.getTransformationMatrix();
+	ent->renderable->shader->setMat4("modelMatrix", &transformationMatrix[0][0]);
 	ent->renderable->shader->setMat4("viewMatrix", &viewMatrix[0][0]);
 	ent->renderable->shader->setMat4("projectionMatrix", &projectionMatrix[0][0]);
 	ent->renderable->render();

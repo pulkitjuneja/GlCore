@@ -20,9 +20,9 @@ public:
 	bool init() {
 		vector<float> vertices = {
 		  0.5f,  0.5f, 0.0f,
-		  0.5f, -0.5f, 0.0f, 
-		 -0.5f, -0.5f, 0.0f, 
-		 -0.5f,  0.5f, 0.0f  };
+		  0.5f, -0.5f, 0.0f,
+		 -0.5f, -0.5f, 0.0f,
+		 -0.5f,  0.5f, 0.0f };
 
 		vector<unsigned int> indices = { 0,1,2,2,3,0 };
 		Mesh* mesh = new Mesh(vertices, indices);
@@ -35,6 +35,7 @@ public:
 	}
 
 	void update() {
+		meshEntity.transfrom.rotate(glm::vec3(0, 0.0005, 0));
 	}
 
 	void render() {
