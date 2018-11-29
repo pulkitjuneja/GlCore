@@ -21,10 +21,10 @@ public:
 	TestWorld() {};
 	bool init() {
 		vector<Vertex> vertices = {
-			Vertex(glm::vec3(0.5,0.5,0),glm::vec3(0,0,-1),glm::vec2(0.5,0.5)),
-			Vertex(glm::vec3(0.5,-0.5,0),glm::vec3(0,0,-1),glm::vec2(0.5,0.5)),
-			Vertex(glm::vec3(-0.5,-0.5,0),glm::vec3(0,0,-1),glm::vec2(0.5,0.5)),
-			Vertex(glm::vec3(-0.5,0.5,0),glm::vec3(0,0,-1),glm::vec2(0.5,0.5)),
+			Vertex(glm::vec3(0.5f,0.5f,0),glm::vec3(0,0,-1),glm::vec2(0.5,0.5)),
+			Vertex(glm::vec3(0.5f,-0.5f,0),glm::vec3(0,0,-1),glm::vec2(0.5,0.5)),
+			Vertex(glm::vec3(-0.5f,-0.5f,0),glm::vec3(0,0,-1),glm::vec2(0.5,0.5)),
+			Vertex(glm::vec3(-0.5f,0.5f,0),glm::vec3(0,0,-1),glm::vec2(0.5,0.5)),
 		};
 
 		vector<unsigned int> indices = { 0,1,3,1,2,3 };
@@ -45,7 +45,7 @@ public:
 	}
 
 	void update() {
-		planeEntity.transfrom.rotate(glm::vec3(0, 0, 0.0005));
+		crysisEntity.transfrom.rotate(glm::vec3(0, 0.0005, 0));
 	}
 
 	void render() {
