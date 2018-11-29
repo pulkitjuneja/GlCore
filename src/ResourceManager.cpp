@@ -78,30 +78,41 @@ Shader* ResourceManager::getShader(const std::string &shaderName) {
     return loadedShaders [shaderName];
 }
 
-void ResourceManager::loadTexture(const string &texturePath, int &width, int &height, int &nrChannels, const string &textureName) {
+unsigned int ResourceManager::loadTexture(const string& texturePath, const string& directory) {
     {
+		string filename = string(texturePath);
+		filename = directory + '/' + filename;
+
         GLuint texture;
         glGenTextures(1, &texture);
         glBindTexture(GL_TEXTURE_2D, texture);
 // set the texture wrapping/filtering options (on the currently bound texture object)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-        unsigned char* data = stbi_load(texturePath.c_str(), &width, &height, &nrChannels, 0);
+		int width, height, nrComponents;
 
-        if (data)
-        {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        unsigned char* data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
+
+        if (data) {
+			GLenum format;
+			if (nrComponents == 1)
+				format = GL_RED;
+			else if (nrComponents == 3)
+				format = GL_RGB;
+			else if (nrComponents == 4)
+				format = GL_RGBA;
+
+            glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
             glGenerateMipmap(GL_TEXTURE_2D);
-            textures.insert(pair<string,GLuint&>(textureName, texture));
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         }
         else
         {
             std::cout << "Failed to load texture" << std::endl;
         }
         stbi_image_free(data);
-
+		return texture;
     }
 }

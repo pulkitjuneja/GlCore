@@ -6,8 +6,17 @@ set(CMAKE_CXX_STANDARD 11)
 find_package(OpenGL REQUIRED)
 #find_package(GLEW REQUIRED)
 
-add_library(GlCore
 
+message ("Open gl libs" ${OPENGL_LIBRARIES})
+
+link_directories(
+	${CMAKE_CURRENT_SOURCE_DIR}/ext/assimp/lib
+)
+
+add_executable(GlCore
+		TestWorld.cpp
+		main.cpp
+		#remove from here
         src/Globals.h
         src/Mesh.cpp
         src/Mesh.h
@@ -31,17 +40,22 @@ add_library(GlCore
 		src/Camera.h src/Camera.cpp
 		src/EntityManager.h src/EntityManager.cpp src/Component.h
 		src/Transform.h src/Transform.cpp
+		src/Model.h src/Model.cpp
         src/ParticleUpdater.h)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/ext/glm)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/ext/assimp/include)
+
 
 target_link_libraries(GlCore 
 	${OPENGL_LIBRARIES}
 	sfml-graphics.lib
 	sfml-window.lib
 	sfml-system.lib
-	glew32.lib)
+	glew32.lib
+	assimpd.lib
+	)
 
 if(APPLE)
     target_include_directories(GlCore PUBLIC

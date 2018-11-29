@@ -35,3 +35,8 @@ Transform::Transform()
 	this->eulerAngles = glm::vec3(0, 0, 0);
 	this->scale = glm::vec3(1, 1, 1);
 }
+
+void Transform::setScale(glm::vec3& scale) 
+{
+	this->scale = scale;
+}

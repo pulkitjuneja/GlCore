@@ -18,6 +18,7 @@ public:
 	glm::mat4 getTransformationMatrix();
 	void translate(glm::vec3& movement);
 	void increaseScale(glm::vec3& scale);
+	void setScale(glm::vec3& scale);
 	void rotate(glm::vec3& rotation);
 };
 
