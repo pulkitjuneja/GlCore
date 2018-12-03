@@ -10,7 +10,7 @@ Camera::Camera(glm::vec3 position, glm::vec3 direction) {
 
 glm::mat4 Camera::getViewMatrix()
 {
-	return glm::lookAt(this->position, this->direction, this->up);
+	return glm::lookAt(this->position, this->position + this->direction, this->up);
 }
 
 glm::mat4 Camera::getProjectionMatrix()

@@ -27,7 +27,6 @@ Model::Model(std::vector<Vertex>& vertices, vector<unsigned int>& indices)
 
 void Model::render()
 {
-	glDisable(GL_CULL_FACE);
 	for (unsigned int i = 0; i < meshes.size(); i++)
 		meshes[i].Draw(shader);
 }

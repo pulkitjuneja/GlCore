@@ -14,6 +14,9 @@ void Engine::start() {
     if(!init()) {
         isEngineRunning = false;
     }
+
+	glEnable(GL_DEPTH_TEST);
+
     sf::Clock clock;
     while (isEngineRunning) {
         sf::Event windowEvent;
@@ -32,7 +35,7 @@ void Engine::start() {
         update();
 
         glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
-        glClear( GL_COLOR_BUFFER_BIT );
+        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
         render();
 

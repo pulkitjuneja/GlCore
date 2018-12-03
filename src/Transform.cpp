@@ -19,6 +19,10 @@ void Transform::translate(glm::vec3 & movement)
 	position += movement;
 }
 
+void Transform::setPosition(glm::vec3 newPosition) {
+	position = newPosition;
+}
+
 void Transform::increaseScale(glm::vec3 & scale)
 {
 	this->scale += scale;
