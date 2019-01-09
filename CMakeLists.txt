@@ -31,16 +31,13 @@ add_executable(GlCore
 	    src/Engine.h
         src/Particle.cpp
         src/Particle.h
-		src/Renderable.h
-		src/MeshRenderer.h
-		src/MeshRenderer.cpp
         src/ParticleManager.cpp
         src/ParticleManager.h
 		src/Entity.h src/Entity.cpp
 		src/Camera.h src/Camera.cpp
-		src/EntityManager.h src/EntityManager.cpp src/Component.h
+		src/EntityManager.h src/EntityManager.cpp
 		src/Transform.h src/Transform.cpp
-		src/Model.h src/Model.cpp
+		src/Scene.h src/Scene.cpp
         src/ParticleUpdater.h)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)

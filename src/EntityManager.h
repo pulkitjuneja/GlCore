@@ -5,11 +5,12 @@
 
 #include "Entity.h"
 #include "Camera.h"
-#include "Renderable.h"
 #include "Globals.h"
 
 class EntityManager {
 	std::vector<Entity*> entities;
+
+	void setGlobalUniforms(Shader* shader);
 
 public:
 	Camera* mainCamera;

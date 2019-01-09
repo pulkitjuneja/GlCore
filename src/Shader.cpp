@@ -18,10 +18,7 @@ void Shader::readFromFile(const string &fileName, char* & shaderContent) {
 }
 
 void Shader::use() {
-    if(!(ResourceManager::getInstance()->currentShader == this)) {
         glUseProgram(shaderProgram);
-        ResourceManager::getInstance()->currentShader = this;
-    }
 }
 
 void Shader::setBool(const string &name, bool value) const {
