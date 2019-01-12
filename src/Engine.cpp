@@ -6,6 +6,12 @@ const GLint WIDTH = 1366, HEIGHT = 768;
 sf::Time Engine::deltaTime;
 sf::Time Engine::timeSinceStart;
 
+void Engine::loadDefaultShaders()
+{
+	ResourceManager::getInstance()->loadShader("Shaders/basic.vert", "Shaders/basic.frag", "defaultShader");
+	ResourceManager::getInstance()->loadShader("Shaders/TexturedMesh.vert", "Shaders/TexturedMesh.frag", "texturedMeshShader");
+}
+
 void Engine::start() {
     // engine specific initializations
     if(!setupSFML()) {
@@ -67,7 +73,7 @@ bool Engine::setupSFML() {
 
     // Load Default Shaders
 
-    ResourceManager::getInstance()->loadShader("Shaders/basic.vert", "Shaders/basic.frag", "defaultShader");
+	loadDefaultShaders();
 
   return true;
 }

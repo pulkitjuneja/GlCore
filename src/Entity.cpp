@@ -1,18 +1,19 @@
 #include "Entity.h"
 
-void Entity::update()
+Entity::Entity(string name)
 {
-	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); it++) {
-		(*it)->update();
-	}
+	this->name = name;
 }
 
-void Entity::addComponent(Component * component)
+Entity::Entity(string name, Mesh * mesh, Material * mat)
 {
-	components.push_back(component);
+	this->name = name;
+	this->mesh = mesh;
+	this->overrideMaterial = mat;
 }
 
-void Entity::setRenderer(Renderable * renderable)
+Transform * Entity::getTransform()
 {
-	this->renderable = renderable;
+	return &this->transfrom;
 }
+

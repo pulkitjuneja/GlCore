@@ -25,7 +25,12 @@ ResourceManager::ResourceManager() {}
     return instance;
 }
 
-void ResourceManager::loadShader(const std::string &vertexShaderPath, const std::string &fragmentShaderPath, const std::string &shaderName) {
+ void ResourceManager::loadShader(const std::string &vertexShaderPath, const std::string &fragmentShaderPath, const std::string &shaderName) {
+
+	if (loadedShaders.find(shaderName) != loadedShaders.end()) {
+		cout << "Shder already loaded, to get the shader use the getShader function";
+		return;
+	}
     unsigned int vertexShader, fragmentShader;
     vertexShader = glCreateShader(GL_VERTEX_SHADER);
     fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -66,22 +71,17 @@ void ResourceManager::loadShader(const std::string &vertexShaderPath, const std:
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 
-    loadedShaders.insert(pair<string, Shader*>(shaderName, new Shader(shaderProgram, shaderName)));
-    
+    loadedShaders.insert(make_pair(shaderName, Shader(shaderProgram, shaderName)));
 }
 
-Shader* ResourceManager::getShader(const std::string &shaderName) {
-    if (loadedShaders.count(shaderName) == 0) {
-        string debugShaderName = "defaultShader";
-        return loadedShaders [debugShaderName];
-    }
-    return loadedShaders [shaderName];
-}
+Texture* ResourceManager::loadTexture(const string& texturePath, const string& directory, TextureType type) {
 
-unsigned int ResourceManager::loadTexture(const string& texturePath, const string& directory) {
-    {
 		string filename = string(texturePath);
 		filename = directory + '/' + filename;
+
+		if (textures.find(texturePath) != textures.end()) {
+			return &textures.find(filename)->second;
+		}
 
         GLuint texture;
         glGenTextures(1, &texture);
@@ -112,7 +112,115 @@ unsigned int ResourceManager::loadTexture(const string& texturePath, const strin
         {
             std::cout << "Failed to load texture" << std::endl;
         }
-        stbi_image_free(data);
-		return texture;
-    }
+		stbi_image_free(data);
+		textures.insert(make_pair(filename, Texture(texture, texturePath, type)));
+
+		return &textures.find(filename)->second;
+}
+
+Mesh * ResourceManager::loadMesh(string path, int loaderFlags)
+{
+	if (loadedMeshes.find(path) != loadedMeshes.end()) {
+		return &loadedMeshes.find(path)->second;
+	}
+
+	Assimp::Importer import;
+	const aiScene *scene = import.ReadFile(path, loaderFlags);
+
+	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
+		cout << "ERROR::ASSIMP::" << import.GetErrorString() << endl;
+		return nullptr;
+	}
+	string directory = path.substr(0, path.find_last_of('/'));
+
+	int vertexCount = 0;
+	int indexCount = 0;
+	std::vector<Vertex> vertices;
+	std::vector<unsigned int> indices;
+	std::vector<SubMesh> submeshes;
+
+	submeshes.resize(scene->mNumMeshes);
+
+	for (int i = 0; i < scene->mNumMeshes; i++) {
+		aiMesh* currentMesh = scene->mMeshes[i];
+
+		submeshes[i].indexCount = currentMesh->mNumFaces * 3;
+		submeshes[i].baseVertex = vertexCount;
+		submeshes[i].baseIndex = indexCount;
+
+		vertexCount += currentMesh->mNumVertices;
+		indexCount += submeshes[i].indexCount;
+
+		// extract vertex data from current mesh
+		for (int j = 0; j < currentMesh->mNumVertices; j++) {
+			Vertex vertex;
+			vertex.position = glm::vec3(currentMesh->mVertices[j].x, currentMesh->mVertices[j].y, currentMesh->mVertices[j].z);
+			vertex.normals = glm::vec3(currentMesh->mNormals[j].x, currentMesh->mNormals[j].y, currentMesh->mNormals[j].z);
+			if (currentMesh->mTextureCoords[0]) {
+				vertex.texCoords = glm::vec2(currentMesh->mTextureCoords[0][j].x, currentMesh->mTextureCoords[0][j].y);
+			}
+
+			vertices.push_back(vertex);
+		}
+
+		for (unsigned int j = 0; j < currentMesh->mNumFaces; j++)
+		{
+			aiFace face = currentMesh->mFaces[j];
+			for (unsigned int k = 0; k < face.mNumIndices; k++)
+				indices.push_back(face.mIndices[k]);
+		}
+
+		Material material;
+		material.name = string(&path[path.find_last_of('/') + 1], &path[path.find_last_of('.')]);
+		material.name += "_";
+		material.name += currentMesh->mName.C_Str() + std::to_string(i);
+
+		if (currentMesh->mMaterialIndex >= 0) {
+			aiMaterial *aiMaterial = scene->mMaterials[currentMesh->mMaterialIndex];
+			//material.
+
+			std::vector<Texture* > diffuseMaps = loadMaterialTextures(aiMaterial,
+				aiTextureType_DIFFUSE, directory);
+			material.textures.insert(material.textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+			vector<Texture* > specularMaps = loadMaterialTextures(aiMaterial,
+				aiTextureType_SPECULAR, directory);
+			material.textures.insert(material.textures.end(), specularMaps.begin(), specularMaps.end());
+		}
+
+		// load a default shader to the material
+		material.setShader(getShader("texturedMeshShader"));
+		materials.insert(make_pair(material.name, material));
+		submeshes[i].material = &materials[material.name];
+	}
+
+	Mesh newMesh(vertices, indices, submeshes);
+	loadedMeshes.insert(make_pair(path, newMesh));
+	return &loadedMeshes.find(path)->second;
+}
+
+Shader * ResourceManager::getShader(string shaderName)
+{
+	if (loadedShaders.find(shaderName) != loadedShaders.end()) {
+		return &loadedShaders.find(shaderName)->second;
+	}
+	else {
+		cout << "Shader " << shaderName << " is not loaded";
+		return nullptr;
+	}
+}
+
+std::vector<Texture*> ResourceManager::loadMaterialTextures(aiMaterial * aiMaterial,
+	aiTextureType aiTextureType, string directory)
+{
+	vector<Texture* > textures;
+
+	for (int i = 0; i < aiMaterial->GetTextureCount(aiTextureType); i++) {
+		aiString texturePath;
+		aiMaterial->GetTexture(aiTextureType, i, &texturePath);
+		TextureType textureType = textureTypeMap[aiTextureType];
+		Texture* tex = loadTexture(texturePath.C_Str(), directory, textureType);
+		textures.push_back(tex);
+	}
+
+	return textures;
 }

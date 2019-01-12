@@ -6,37 +6,32 @@
 #include <Material.h>
 #include "Globals.h"
 #include <glm/glm.hpp>
+#include "Vertex.h"
+#include "Material.h"
+#include <assimp/scene.h>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
-struct Vertex {
-	glm::vec3 position;
-	glm::vec3 normals;
-	glm::vec2 texCoords;
-public:
-	Vertex(glm::vec3 position, glm::vec3 normals, glm::vec2 texCoords) {
-		this->position = position;
-		this->normals = normals;
-		this->texCoords = texCoords;
-	}
-
-	Vertex () {}
-};
-
-struct Texture {
-	unsigned int id;
-	string type;
-	string name;
-	string path;
+struct SubMesh {
+	Material* material;
+	uint32_t baseIndex;
+	uint32_t indexCount;
+	uint32_t baseVertex;
 };
 
 class Mesh {
 public:
+	Mesh(std::vector<Vertex> &vertices,
+		std::vector<unsigned int> &indices,
+		std::vector<SubMesh> &subMeshes
+	);
+	
+	GLuint VBO, VAO, EBO;
 	std::vector<unsigned int> indices;
 	std::vector<Vertex> vertices;
-	vector<Texture> textures;
-    Mesh (std::vector<Vertex> &vertices, std::vector<unsigned int> &indices, vector<Texture> textures);
-	void Draw(Shader* shader);
-	GLuint VBO, VAO, EBO;
-private:
+	std::vector<SubMesh> subMeshes;
+
     void setupMesh();
 };
 

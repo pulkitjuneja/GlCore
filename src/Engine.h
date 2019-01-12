@@ -19,6 +19,7 @@ public:
     static const GLint WIDTH = 1366, HEIGHT = 768;
     static sf::Time deltaTime;
     static sf::Time timeSinceStart;
+	void loadDefaultShaders();
     virtual bool init () = 0 ;
     virtual void update() = 0;
     virtual void render () = 0;

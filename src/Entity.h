@@ -3,19 +3,24 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include "Component.h"
 #include "Globals.h"
-#include "Renderable.h"
 #include "Transform.h"
+#include "Mesh.h"
+#include "Material.h"
 
 class Entity {
+
 public:
+
+	string name;
 	Transform transfrom;
-	std::vector<Component*> components;
-	Renderable* renderable;
-	void addComponent(Component * component);
-	void setRenderer(Renderable* renderable);
-	void update();
+	Mesh* mesh;
+	Material* overrideMaterial;
+
+	Entity(string name);
+	Entity(string name, Mesh* mesh, Material* mat);
+	Transform* getTransform();
+	virtual void update() {};
 };
 
 #endif // !ENTITY_H

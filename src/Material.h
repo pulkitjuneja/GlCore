@@ -3,23 +3,19 @@
 #define GLTESTBED_MATERIAL_H
 
 #include <Shader.h>
+#include "Vertex.h"
+#include "Shader.h"
 
 class Material {
 
 public:
-    Shader* shader;
-    GLuint texture;
-    Material (Shader* shader, GLuint texture);
-    Material (Shader* shader);
-
+	string name;
+	Shader* getShader() { return shader; };
+	void setShader(Shader* shader) { this->shader = shader; };
+	std::vector<Texture*> textures;
+private:
+	Shader* shader;
 };
 
-inline Material::Material(Shader *shader, GLuint texture): texture(texture) {
-    this->shader = shader;
-}
-
-inline Material::Material(Shader *shader): texture(0) {
-    this->shader = shader;
-}
 
 #endif //GLTESTBED_MATERIAL_H

@@ -10,12 +10,10 @@
 #include "Shader.h"
 #include "ParticleUpdater.h"
 #include <glm/gtc/matrix_transform.hpp>
-#include "Renderable.h"
-#include "Component.h"
 
 enum ParticleType {billboard, mesh};
 
-class ParticleManager: public Renderable, Component {
+class ParticleManager {
 
     const int maxParticles = 100000;
     std::vector<Particle*> particleContainer;
@@ -35,6 +33,9 @@ class ParticleManager: public Renderable, Component {
     // TODO: To replace this with actual camera matrix
     glm::mat4 viewMatrix, projectionMatrix;
     void calculateViewProjectionMatrix();
+
+	// TODO use proper material
+	Shader* shader;
 
 public:
     ParticleManager(const std::string& shaderName, ParticleUpdater *particleUpdater);

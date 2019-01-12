@@ -8,7 +8,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-class Camera {
+class Camera  {
 public:
 	glm::vec3 position;
 	glm::vec3 up;
@@ -18,8 +18,6 @@ public:
 	Camera(glm::vec3 position, glm::vec3 direction);
 	glm::mat4 getViewMatrix();
 	glm::mat4 getProjectionMatrix();
-
-	virtual void update() {};
 };
 
 #endif
