@@ -13,8 +13,10 @@ protected:
 	// std::vector<Light> Lights;
 	Camera* mainCamera;
 public:
-	Entity* createEntity(string name, Mesh* mesh=nullptr, Material* overrideMat=nullptr);
-	Entity* lookupEntity(string name);
+
+	template <class T >
+	T* createEntity(string name, Mesh* mesh = nullptr, Material* overrideMat = nullptr);
+
 	std::vector<Entity*>& getEntities();
 
 	Camera* getMainCamera();
@@ -27,4 +29,22 @@ public:
 	void RenderEntities();
 };
 
+template<class T>
+inline T * Scene::createEntity(string name, Mesh* mesh, Material* overrideMat)
+{
+	T* ent = new T(name);
+	// this is to make sure T is always an entity
+	static_cast<Entity*>(ent);
+	if (mesh != nullptr) {
+		ent->mesh = mesh;
+	}
+	if (overrideMat != nullptr) {
+		ent->overrideMaterial = overrideMat;
+	}
+
+	Entities.push_back(ent);
+	return ent;
+}
+
 #endif
+

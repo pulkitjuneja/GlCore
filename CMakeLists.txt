@@ -35,7 +35,6 @@ add_executable(GlCore
         src/ParticleManager.h
 		src/Entity.h src/Entity.cpp
 		src/Camera.h src/Camera.cpp
-		src/EntityManager.h src/EntityManager.cpp
 		src/Transform.h src/Transform.cpp
 		src/Scene.h src/Scene.cpp
         src/ParticleUpdater.h)

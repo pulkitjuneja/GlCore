@@ -2,25 +2,6 @@
 
 #include "Scene.h"
 
-Entity * Scene::createEntity(string name, Mesh* mesh, Material* overrideMat)
-{
-	Entity* ent = new Entity(name);
-	if (mesh != nullptr) {
-		ent->mesh = mesh;
-	}
-	if (overrideMat != nullptr) {
-		ent->overrideMaterial = overrideMat;
-	}
-
-	Entities.push_back(ent);
-	return ent;
-}
-
-Entity * Scene::lookupEntity(string name)
-{
-	return nullptr;
-}
-
 std::vector<Entity*>& Scene::getEntities()
 {
 	return Entities;
