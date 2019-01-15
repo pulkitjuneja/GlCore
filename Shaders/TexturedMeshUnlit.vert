@@ -9,12 +9,10 @@ uniform mat4 projectionMatrix;
 
 out vec3 vert_normal;
 out vec2 vert_texCoords;
-out vec3 fragPos;
 
 void main() {
 	vec4 homogenousVertexPosition = vec4(position.x, position.y, position.z, 1.0);
-	vert_normal = mat3(inverse(transpose(modelMatrix)))*normal;
+	vert_normal = normal;
 	vert_texCoords = texCoords;
-	fragPos = vec3(modelMatrix* homogenousVertexPosition);
 	gl_Position = projectionMatrix * viewMatrix * modelMatrix * homogenousVertexPosition;
 }

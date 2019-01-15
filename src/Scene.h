@@ -6,16 +6,20 @@
 #include <unordered_map>
 #include <Entity.h>
 #include <Camera.h>
+#include "Light.h"
 
 class Scene {
 protected:
 	std::vector<Entity*> Entities;
-	// std::vector<Light> Lights;
+	std::vector<Light*> Lights;
 	Camera* mainCamera;
 public:
 
 	template <class T >
 	T* createEntity(string name, Mesh* mesh = nullptr, Material* overrideMat = nullptr);
+
+	template <class T>
+	T* createLight(glm::vec3 position, glm::vec3 color);
 
 	std::vector<Entity*>& getEntities();
 
@@ -44,6 +48,18 @@ inline T * Scene::createEntity(string name, Mesh* mesh, Material* overrideMat)
 
 	Entities.push_back(ent);
 	return ent;
+}
+
+template<class T>
+inline T * Scene::createLight(glm::vec3 position, glm::vec3 color)
+{
+	T* light = new T();
+	static_cast<Light*>(light);
+	light->position = position;
+	light->color = color;
+
+	Lights.push_back(light);
+	return light;
 }
 
 #endif

@@ -31,6 +31,14 @@ void Scene::setGlobalUniforms(Shader * shader)
 	glm::mat4 projectionMatrix = mainCamera->getProjectionMatrix();
 	shader->setMat4("viewMatrix", &viewMatrix[0][0]);
 	shader->setMat4("projectionMatrix", &projectionMatrix[0][0]);
+
+	// set light(s) into shader
+	for (int i = 0; i < Lights.size(); i++) {
+		shader->setFloat3("light.position", Lights[i]->position.x, Lights[i]->position.y, Lights[i]->position.z);
+		shader->setFloat3("light.color", Lights[i]->color.r, Lights[i]->color.g, Lights[i]->color.b);
+	}
+
+	shader->setFloat3("cameraPosition", mainCamera->position.x, mainCamera->position.y, mainCamera->position.z);
 }
 
 void Scene::RenderEntities()
@@ -54,8 +62,8 @@ void Scene::RenderEntities()
 			setGlobalUniforms(shader);
 			shader->setMat4("modelMatrix", &ent->getTransform()->getTransformationMatrix()[0][0]);
 
-			unsigned int diffuseNr = 1;
-			unsigned int specularNr = 1;
+			unsigned int diffuseNr = 0;
+			unsigned int specularNr = 0;
 
 			for (int j = 0; j < currentSubMesh.material->textures.size(); j++) {
 				Texture* currentTexture = currentSubMesh.material->textures[j];

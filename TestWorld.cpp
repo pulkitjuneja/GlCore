@@ -21,6 +21,7 @@ public:
 
 		crysisEntity = scene->createEntity<Entity>("CrysisEntity", ResourceManager::getInstance()->loadMesh("F:/Projects/libraries/crysisM/nanosuit.obj"));
 		scene->setMainCamera(new Camera(glm::vec3(0, 0, -15), glm::vec3(0, 0, 1)));
+		scene->createLight<Light>(glm::vec3(10, -10, 0), glm::vec3(0.5, 0.5, 0.5));
 		crysisEntity->transfrom.setPosition(glm::vec3(0,-4, 0));
 		crysisEntity->transfrom.setScale(glm::vec3(0.4, 0.4, 0.4));
 		return true;
