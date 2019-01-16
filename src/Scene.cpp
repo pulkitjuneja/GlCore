@@ -35,7 +35,9 @@ void Scene::setGlobalUniforms(Shader * shader)
 	// set light(s) into shader
 	for (int i = 0; i < Lights.size(); i++) {
 		shader->setFloat3("light.position", Lights[i]->position.x, Lights[i]->position.y, Lights[i]->position.z);
-		shader->setFloat3("light.color", Lights[i]->color.r, Lights[i]->color.g, Lights[i]->color.b);
+		shader->setFloat3("light.diffuse", Lights[i]->diffuse.r, Lights[i]->diffuse.g, Lights[i]->diffuse.b);
+		shader->setFloat3("light.specular", Lights[i]->specular.r, Lights[i]->specular.g, Lights[i]->specular.b);
+		shader->setFloat3("light.ambient", Lights[i]->ambient.r, Lights[i]->ambient.g, Lights[i]->ambient.b);
 	}
 
 	shader->setFloat3("cameraPosition", mainCamera->position.x, mainCamera->position.y, mainCamera->position.z);

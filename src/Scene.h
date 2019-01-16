@@ -19,7 +19,9 @@ public:
 	T* createEntity(string name, Mesh* mesh = nullptr, Material* overrideMat = nullptr);
 
 	template <class T>
-	T* createLight(glm::vec3 position, glm::vec3 color);
+	T* createLight(glm::vec3 position, glm::vec3 diffuse,
+		glm::vec3 specular,
+		glm::vec3 ambient = glm::vec3(0, 0, 0));
 
 	std::vector<Entity*>& getEntities();
 
@@ -51,12 +53,16 @@ inline T * Scene::createEntity(string name, Mesh* mesh, Material* overrideMat)
 }
 
 template<class T>
-inline T * Scene::createLight(glm::vec3 position, glm::vec3 color)
+inline T * Scene::createLight(glm::vec3 position, glm::vec3 diffuse,
+	glm::vec3 specular,
+	glm::vec3 ambient)
 {
 	T* light = new T();
 	static_cast<Light*>(light);
 	light->position = position;
-	light->color = color;
+	light->diffuse = diffuse;
+	light->specular = specular;
+	light->ambient = ambient;
 
 	Lights.push_back(light);
 	return light;
