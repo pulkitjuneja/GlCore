@@ -17,6 +17,15 @@
 #include "Vertex.h"
 
 
+struct EnumClassHash
+{
+    template <typename T>
+    std::size_t operator()(T t) const
+    {
+        return static_cast<std::size_t>(t);
+    }
+};
+
 class ResourceManager {
 private:
 
@@ -26,7 +35,7 @@ private:
 	std::unordered_map<string, Material> materials;
 	std::unordered_map<string, Mesh> loadedMeshes;
 
-	std::unordered_map <aiTextureType, TextureType> textureTypeMap = {
+	std::unordered_map <aiTextureType, TextureType, EnumClassHash> textureTypeMap = {
 	{aiTextureType_DIFFUSE, TextureType::DIFFUSE},
 	{aiTextureType_SPECULAR, TextureType::SPECULAR}
 	};

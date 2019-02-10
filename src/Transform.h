@@ -17,10 +17,10 @@ public:
 	Transform();
 	glm::mat4 getTransformationMatrix();
 	void setPosition(glm::vec3 newPosition);
-	void translate(glm::vec3& movement);
-	void increaseScale(glm::vec3& scale);
-	void setScale(glm::vec3& scale);
-	void rotate(glm::vec3& rotation);
+	void translate(glm::vec3 movement);
+	void increaseScale(glm::vec3 scale);
+	void setScale(glm::vec3 scale);
+	void rotate(glm::vec3 rotation);
 
 	glm::vec3 getPosition();
 	glm::vec3 getScale();

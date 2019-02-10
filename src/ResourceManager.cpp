@@ -7,7 +7,7 @@ ResourceManager* ResourceManager::instance;
 
 
 void ResourceManager::readFromFile(const std::string &fileName, char *&shaderContent) {
-	string fullPath = dpath+ fileName;// dpath + fileName;
+	string fullPath = fileName;
     cout<<fullPath<<"\n";
     ifstream shaderFile(fullPath);
     stringstream buffer;
@@ -28,7 +28,7 @@ ResourceManager::ResourceManager() {}
  void ResourceManager::loadShader(const std::string &vertexShaderPath, const std::string &fragmentShaderPath, const std::string &shaderName) {
 
 	if (loadedShaders.find(shaderName) != loadedShaders.end()) {
-		cout << "Shder already loaded, to get the shader use the getShader function";
+		cout << "Shader already loaded, to get the shader use the getShader function";
 		return;
 	}
     unsigned int vertexShader, fragmentShader;
