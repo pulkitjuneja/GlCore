@@ -38,7 +38,11 @@ add_executable(GlCore
 		src/Transform.h src/Transform.cpp
 		src/Scene.h src/Scene.cpp
 		src/Light.h
-        src/ParticleUpdater.h)
+        src/ParticleUpdater.h
+		#utils
+		src/utils/CameraController.h
+		src/utils/CameraController.cpp
+		)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/ext/glm)

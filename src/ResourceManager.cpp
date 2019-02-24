@@ -176,6 +176,7 @@ Mesh * ResourceManager::loadMesh(string path, int loaderFlags)
 		material.name += currentMesh->mName.C_Str() + std::to_string(i);
 
 		if (currentMesh->mMaterialIndex >= 0) {
+			material.setShader(getShader("texturedMeshShader"));
 			aiMaterial *aiMaterial = scene->mMaterials[currentMesh->mMaterialIndex];
 			//material.
 
@@ -187,8 +188,11 @@ Mesh * ResourceManager::loadMesh(string path, int loaderFlags)
 			material.textures.insert(material.textures.end(), specularMaps.begin(), specularMaps.end());
 		}
 
+		else {
+			material.setShader(getShader("defaultShader"));
+		}
+
 		// load a default shader to the material
-		material.setShader(getShader("texturedMeshShader"));
 		materials.insert(make_pair(material.name, material));
 		submeshes[i].material = &materials[material.name];
 	}

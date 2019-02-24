@@ -2,6 +2,32 @@
 
 #include "Scene.h"
 
+PointLight * Scene::createPointLight(glm::vec3 position, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular)
+{
+	PointLight* light = new PointLight();
+	light->position = position;
+	light->ambient = ambient;
+	light->diffuse = diffuse;
+	light->specular = specular;
+
+	pointLights.push_back(light);
+	return light;
+}
+
+DirectionalLight * Scene::createDirectionalLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular)
+{
+	DirectionalLight* light = new DirectionalLight();
+
+	light->ambient = ambient;
+	light->diffuse = diffuse;
+	light->specular = specular;
+	light->direction = direction;
+
+	this->directionalLight = light;
+	return light;
+
+}
+
 std::vector<Entity*>& Scene::getEntities()
 {
 	return Entities;
@@ -32,15 +58,25 @@ void Scene::setGlobalUniforms(Shader * shader)
 	shader->setMat4("viewMatrix", &viewMatrix[0][0]);
 	shader->setMat4("projectionMatrix", &projectionMatrix[0][0]);
 
-	// set light(s) into shader
-	for (int i = 0; i < Lights.size(); i++) {
-		shader->setFloat3("light.position", Lights[i]->position.x, Lights[i]->position.y, Lights[i]->position.z);
-		shader->setFloat3("light.diffuse", Lights[i]->diffuse.r, Lights[i]->diffuse.g, Lights[i]->diffuse.b);
-		shader->setFloat3("light.specular", Lights[i]->specular.r, Lights[i]->specular.g, Lights[i]->specular.b);
-		shader->setFloat3("light.ambient", Lights[i]->ambient.r, Lights[i]->ambient.g, Lights[i]->ambient.b);
+	// set directional light
+	if (directionalLight != nullptr) {
+		shader->setFloat3("directionalLight.direction", directionalLight->direction.x, directionalLight->direction.y, directionalLight->direction.z);
+		shader->setFloat3("directionalLight.diffuse", directionalLight->diffuse.r, directionalLight->diffuse.g, directionalLight->diffuse.b);
+		shader->setFloat3("directionalLight.ambient", directionalLight->ambient.r, directionalLight->ambient.g, directionalLight->ambient.b);
+		shader->setFloat3("directionalLight.specular", directionalLight->specular.r, directionalLight->specular.g, directionalLight->specular.b);
 	}
 
-	shader->setFloat3("cameraPosition", mainCamera->position.x, mainCamera->position.y, mainCamera->position.z);
+	// set pointlight(s) into shader
+	for (int i = 0; i < pointLights.size(); i++) {
+		string prefixString = "pointLights[" + std::to_string(i) + "].";
+		shader->setFloat3(prefixString+"position", pointLights[i]->position.x, pointLights[i]->position.y, pointLights[i]->position.z);
+		shader->setFloat3(prefixString+"diffuse", pointLights[i]->diffuse.r, pointLights[i]->diffuse.g, pointLights[i]->diffuse.b);
+		shader->setFloat3(prefixString+"specular", pointLights[i]->specular.r, pointLights[i]->specular.g, pointLights[i]->specular.b);
+		shader->setFloat3(prefixString+"ambient", pointLights[i]->ambient.r, pointLights[i]->ambient.g, pointLights[i]->ambient.b);
+	}
+	shader->setInt("pointLightCount", pointLights.size());
+
+	shader->setFloat3("cameraPosition", mainCamera->transform.getPosition().x, mainCamera->transform.getPosition().y, mainCamera->transform.getPosition().z);
 }
 
 void Scene::RenderEntities()
@@ -61,7 +97,7 @@ void Scene::RenderEntities()
 			SubMesh currentSubMesh = currentMesh->subMeshes[i];
 			Shader* shader = currentSubMesh.material->getShader();
 
-			setGlobalUniforms(shader);
+			setGlobalUniforms(shader);  
 			shader->setMat4("modelMatrix", &ent->getTransform()->getTransformationMatrix()[0][0]);
 
 			unsigned int diffuseNr = 0;

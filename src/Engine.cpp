@@ -41,7 +41,7 @@ void Engine::start() {
         timeSinceStart += deltaTime;
         update();
 
-        glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
+        glClearColor( 0.3f, 0.4f, 0.6f, 1.0f );
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
         render();
