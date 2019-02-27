@@ -21,12 +21,19 @@ void CameraController::handleRotation()
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
 		sf::Vector2i position = sf::Mouse::getPosition();
 		glm::vec2 currentMousePosition(position.x, position.y);
+		if (firstMouseMove) {
+			lastFrameMousePosition = currentMousePosition;
+			firstMouseMove = false;
+		}
 		glm::vec2 mouseDelta = currentMousePosition - lastFrameMousePosition;
 		glm::vec3 eulerAngleDelta(0);
-		eulerAngleDelta.x = mouseDelta.y; // vertical rotation describes angle around the x axis
+		eulerAngleDelta.x = -mouseDelta.y; // vertical rotation describes angle around the x axis
 		eulerAngleDelta.y = mouseDelta.x; // horizontal rotation describes angle around the y axis
 		eulerAngleDelta *= 0.05;
+		std::cout << eulerAngleDelta.x << eulerAngleDelta.y << "\n";
 		camera->transform.rotate(eulerAngleDelta);
 		lastFrameMousePosition = currentMousePosition;
+	} else {
+		firstMouseMove = true;
 	}
 }

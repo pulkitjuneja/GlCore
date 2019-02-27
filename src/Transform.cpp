@@ -32,6 +32,11 @@ void Transform::rotate(glm::vec3  rotation)
 	this->eulerAngles += rotation;
 }
 
+void Transform::setRotation(glm::vec3 rotation)
+{
+	this->eulerAngles = rotation;
+}
+
 glm::vec3 Transform::getPosition()
 {
 	return position;

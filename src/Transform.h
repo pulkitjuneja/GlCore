@@ -21,6 +21,7 @@ public:
 	void increaseScale(glm::vec3 scale);
 	void setScale(glm::vec3 scale);
 	void rotate(glm::vec3 rotation);
+	void setRotation(glm::vec3 rotation);
 
 	glm::vec3 getPosition();
 	glm::vec3 getScale();
