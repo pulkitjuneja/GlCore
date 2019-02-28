@@ -7,19 +7,21 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "Transform.h"
+#include "Globals.h"
 
-class Camera {
+class Camera  {
 public:
-	glm::vec3 position;
+	Transform transform;
 	glm::vec3 up;
 	glm::vec3 cameraUP;
 	glm::vec3 right;
-	glm::vec3 direction;
-	Camera(glm::vec3 position, glm::vec3 direction);
+	glm::vec3 front;
+	Camera(glm::vec3 position, glm::vec3 front);
+	void getFrontFromRotation();
 	glm::mat4 getViewMatrix();
 	glm::mat4 getProjectionMatrix();
-
-	virtual void update() {};
+	void setintialRotation();
 };
 
 #endif

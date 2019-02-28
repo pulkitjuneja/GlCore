@@ -5,13 +5,35 @@
 
 #include <Material.h>
 #include "Globals.h"
+#include <glm/glm.hpp>
+#include "Vertex.h"
+#include "Material.h"
+#include <assimp/scene.h>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
+struct SubMesh {
+	Material* material;
+	uint32_t baseIndex;
+	uint32_t indexCount;
+	uint32_t baseVertex;
+};
 
 class Mesh {
-    std::vector<float> vertices;
 public:
-	std::vector<unsigned int> indices;
+	Mesh(std::vector<Vertex> &vertices,
+		std::vector<unsigned int> &indices,
+		std::vector<SubMesh> &subMeshes
+	);
+	
 	GLuint VBO, VAO, EBO;
-    Mesh (std::vector<float> &vertices, std::vector<unsigned int> &indices);
+	std::vector<unsigned int> indices;
+	std::vector<Vertex> vertices;
+	std::vector<SubMesh> subMeshes;
+	bool hasNormals;
+	bool hasTexCoords;
+
     void setupMesh();
 };
 

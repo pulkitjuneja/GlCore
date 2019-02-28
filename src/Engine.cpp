@@ -1,10 +1,17 @@
 #include "Engine.h"
 #include "ResourceManager.hpp"
 
-const GLint WIDTH = 1366, HEIGHT = 768;
+const GLint WIDTH = 1920, HEIGHT = 1080;
 
 sf::Time Engine::deltaTime;
 sf::Time Engine::timeSinceStart;
+
+void Engine::loadDefaultShaders()
+{
+	ResourceManager::getInstance()->loadShader("Shaders/basic.vert", "Shaders/basic.frag", "defaultShader");
+	ResourceManager::getInstance()->loadShader("Shaders/TexturedMeshUnlit.vert", "Shaders/TexturedMeshUnlit.frag", "texturedMeshUnlit");
+	ResourceManager::getInstance()->loadShader("Shaders/TexturedMesh.vert", "Shaders/TexturedMesh.frag", "texturedMeshShader");
+}
 
 void Engine::start() {
     // engine specific initializations
@@ -14,6 +21,9 @@ void Engine::start() {
     if(!init()) {
         isEngineRunning = false;
     }
+
+	glEnable(GL_DEPTH_TEST);
+
     sf::Clock clock;
     while (isEngineRunning) {
         sf::Event windowEvent;
@@ -31,8 +41,8 @@ void Engine::start() {
         timeSinceStart += deltaTime;
         update();
 
-        glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
-        glClear( GL_COLOR_BUFFER_BIT );
+        glClearColor( 0.3f, 0.4f, 0.6f, 1.0f );
+        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
         render();
 
@@ -64,7 +74,7 @@ bool Engine::setupSFML() {
 
     // Load Default Shaders
 
-    ResourceManager::getInstance()->loadShader("Shaders/basic.vert", "Shaders/basic.frag", "defaultShader");
+	loadDefaultShaders();
 
   return true;
 }

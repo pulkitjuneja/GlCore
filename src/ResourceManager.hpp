@@ -10,24 +10,52 @@
 #define Resources_hpp
 
 #include <stdio.h>
-#include <map>
+#include <unordered_map> 
 #include "Shader.h"
+#include "Mesh.h"
+#include "Globals.h"
+#include "Vertex.h"
 
-using namespace std;
+
+struct EnumClassHash
+{
+    template <typename T>
+    std::size_t operator()(T t) const
+    {
+        return static_cast<std::size_t>(t);
+    }
+};
 
 class ResourceManager {
 private:
-    map <string,Shader*> loadedShaders;
-    map <string, GLuint&> textures;
-    void readFromFile(const string &fileName, char* & shaderContent);
+
+	// Resource Maps
+    std::unordered_map <string, Shader> loadedShaders;
+	std::unordered_map <string, Texture> textures;
+	std::unordered_map<string, Material> materials;
+	std::unordered_map<string, Mesh> loadedMeshes;
+
+	std::unordered_map <aiTextureType, TextureType, EnumClassHash> textureTypeMap = {
+	{aiTextureType_DIFFUSE, TextureType::DIFFUSE},
+	{aiTextureType_SPECULAR, TextureType::SPECULAR}
+	};
+
     ResourceManager ();
     static ResourceManager* instance;
+
+	void readFromFile(const string &fileName, char* & shaderContent);
+	std::vector<Texture *> loadMaterialTextures(aiMaterial* aiMaterial, aiTextureType textureType, string directory);
+
 public:
-    Shader* currentShader;
     static ResourceManager* getInstance ();
-    void loadShader(const string &vertexShaderPath, const string &fragmentShaderPath, const string& shaderName);
-    Shader* getShader (const string &shaderName);
-    void loadTexture (const string& texturePath, int &width, int &height, int &nrChannels, const string &textureName);
+
+	//Resource Loaders
+	void loadShader(const string &vertexShaderPath, const string &fragmentShaderPath, const string& shaderName);
+    Texture* loadTexture (const string& texturePath, const string& directory, TextureType textureType);
+	Mesh* loadMesh(string path, int loaderFlags = aiProcess_Triangulate | aiProcess_FlipUVs);
+
+	//Getters
+	Shader* getShader(string shaderName);
 };
 
 
