@@ -1,7 +1,7 @@
 #include "Engine.h"
 #include "ResourceManager.hpp"
 
-const GLint WIDTH = 1366, HEIGHT = 768;
+const GLint WIDTH = 1920, HEIGHT = 1080;
 
 sf::Time Engine::deltaTime;
 sf::Time Engine::timeSinceStart;

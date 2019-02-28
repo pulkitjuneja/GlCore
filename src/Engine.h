@@ -16,7 +16,6 @@ private:
 	bool setupSFML();
 
 public:
-    static const GLint WIDTH = 1366, HEIGHT = 768;
     static sf::Time deltaTime;
     static sf::Time timeSinceStart;
 	void loadDefaultShaders();

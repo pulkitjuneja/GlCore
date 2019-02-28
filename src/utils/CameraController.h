@@ -10,7 +10,7 @@
 class CameraController {
 
 	Camera* camera;
-	const float CAMERA_SPEED = 0.005f;
+	const float CAMERA_SPEED = 1.0f;
 	glm::vec2 lastFrameMousePosition;
 	void handleRotation();
 	bool firstMouseMove = true;

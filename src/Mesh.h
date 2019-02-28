@@ -31,6 +31,8 @@ public:
 	std::vector<unsigned int> indices;
 	std::vector<Vertex> vertices;
 	std::vector<SubMesh> subMeshes;
+	bool hasNormals;
+	bool hasTexCoords;
 
     void setupMesh();
 };

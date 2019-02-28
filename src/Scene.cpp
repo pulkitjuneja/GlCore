@@ -62,8 +62,8 @@ void Scene::setGlobalUniforms(Shader * shader)
 	if (directionalLight != nullptr) {
 		shader->setFloat3("directionalLight.direction", directionalLight->direction.x, directionalLight->direction.y, directionalLight->direction.z);
 		shader->setFloat3("directionalLight.diffuse", directionalLight->diffuse.r, directionalLight->diffuse.g, directionalLight->diffuse.b);
-		shader->setFloat3("directionalLight.ambient", directionalLight->ambient.r, directionalLight->ambient.g, directionalLight->ambient.b);
 		shader->setFloat3("directionalLight.specular", directionalLight->specular.r, directionalLight->specular.g, directionalLight->specular.b);
+		shader->setFloat3("directionalLight.ambient", directionalLight->ambient.r, directionalLight->ambient.g, directionalLight->ambient.b);
 	}
 
 	// set pointlight(s) into shader
@@ -73,6 +73,8 @@ void Scene::setGlobalUniforms(Shader * shader)
 		shader->setFloat3(prefixString+"diffuse", pointLights[i]->diffuse.r, pointLights[i]->diffuse.g, pointLights[i]->diffuse.b);
 		shader->setFloat3(prefixString+"specular", pointLights[i]->specular.r, pointLights[i]->specular.g, pointLights[i]->specular.b);
 		shader->setFloat3(prefixString+"ambient", pointLights[i]->ambient.r, pointLights[i]->ambient.g, pointLights[i]->ambient.b);
+		shader->setFloat(prefixString + "linearAttenuation", 0.0025);
+		shader->setFloat(prefixString + "quadraticAttenuation", 0.00007);
 	}
 	shader->setInt("pointLightCount", pointLights.size());
 
@@ -120,6 +122,8 @@ void Scene::RenderEntities()
 				glBindTexture(GL_TEXTURE_2D, currentTexture->id);
 			}
 
+			shader->setInt("material.specularCount", specularNr);
+			shader->setInt("material.diffuseCount", diffuseNr);
 			shader->use();
 			glDrawElementsBaseVertex(GL_TRIANGLES, currentSubMesh.indexCount, GL_UNSIGNED_INT, (void*)(sizeof(unsigned int) * currentSubMesh.baseIndex), currentSubMesh.baseVertex);
 

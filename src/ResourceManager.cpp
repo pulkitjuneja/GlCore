@@ -139,6 +139,9 @@ Mesh * ResourceManager::loadMesh(string path, int loaderFlags)
 	std::vector<unsigned int> indices;
 	std::vector<SubMesh> submeshes;
 
+	bool hasNormals = true;
+	bool hasTexCoords = true;
+
 	submeshes.resize(scene->mNumMeshes);
 
 	for (int i = 0; i < scene->mNumMeshes; i++) {
@@ -155,8 +158,11 @@ Mesh * ResourceManager::loadMesh(string path, int loaderFlags)
 		for (int j = 0; j < currentMesh->mNumVertices; j++) {
 			Vertex vertex;
 			vertex.position = glm::vec3(currentMesh->mVertices[j].x, currentMesh->mVertices[j].y, currentMesh->mVertices[j].z);
-			vertex.normals = glm::vec3(currentMesh->mNormals[j].x, currentMesh->mNormals[j].y, currentMesh->mNormals[j].z);
-			if (currentMesh->mTextureCoords[0]) {
+			if (hasNormals && currentMesh->mNormals != nullptr) {
+				vertex.normals = glm::vec3(currentMesh->mNormals[j].x, currentMesh->mNormals[j].y, currentMesh->mNormals[j].z);
+
+			}
+			if (hasTexCoords && currentMesh->mTextureCoords[0]) {
 				vertex.texCoords = glm::vec2(currentMesh->mTextureCoords[0][j].x, currentMesh->mTextureCoords[0][j].y);
 			}
 
@@ -198,6 +204,8 @@ Mesh * ResourceManager::loadMesh(string path, int loaderFlags)
 	}
 
 	Mesh newMesh(vertices, indices, submeshes);
+	newMesh.hasNormals = hasNormals;
+	newMesh.hasTexCoords = hasTexCoords;
 	loadedMeshes.insert(make_pair(path, newMesh));
 	return &loadedMeshes.find(path)->second;
 }
