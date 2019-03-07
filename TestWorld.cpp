@@ -10,25 +10,26 @@
 #include "Entity.h"
 #include "Scene.h"
 #include "utils/CameraController.h"
+
 class TestWorld : public Engine {
 
 	Scene* scene;
 	Entity* crysisEntity;
-	Entity * sponzaEntity;
 	CameraController* cameraController;
 public:
 	TestWorld() {};
 	bool init() {
 		scene = new Scene();
-
+		renderer->setScene(scene);
 		crysisEntity = scene->createEntity<Entity>("CrysisEntity", ResourceManager::getInstance()->loadMesh("F:/Projects/libraries/crysisM/nanosuit.obj"));
-		sponzaEntity = scene->createEntity<Entity>("SponzaEntity", ResourceManager::getInstance()->loadMesh("Assets/Meshes/Sponza-master/sponza.obj"));
+		Entity* sponzaEntity = scene->createEntity<Entity>("SponzaEntity", ResourceManager::getInstance()->loadMesh("Assets/Meshes/Sponza/sponza.obj"));
+		sponzaEntity->transfrom.setScale(glm::vec3(0.3, 0.3, 0.3));
+
 		scene->setMainCamera(new Camera(glm::vec3(0, 0, -15), glm::vec3(0, 0, 1)));
 		scene->createPointLight(glm::vec3(-10, 10, 5), glm::vec3(0.01, 0.01, 0.01), glm::vec3(1, 1, 1), glm::vec3(1, 1, 1));
 		scene->createPointLight(glm::vec3(300, 10, 5), glm::vec3(0.01, 0.01, 0.01), glm::vec3(1, 1, 1), glm::vec3(1, 1, 1));
 		scene->createDirectionalLight(glm::vec3(0, -1, 0), glm::vec3(0.01, 0.01, 0.01), glm::vec3(1, 1, 0.8), glm::vec3(1, 1, 0.8));
 		crysisEntity->transfrom.setScale(glm::vec3(2, 2, 2));
-		sponzaEntity->transfrom.setScale(glm::vec3(0.3, 0.3, 0.3));
 		cameraController = new CameraController(scene->getMainCamera());
 		return true;
 	}
@@ -37,10 +38,6 @@ public:
 		crysisEntity->transfrom.rotate(glm::vec3(0, 0.005, 0));
 		cameraController->update();
 		scene->update();
-	}
-
-	void render() {
-		scene->RenderEntities();
 	}
 };
 

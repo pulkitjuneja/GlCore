@@ -14,6 +14,9 @@ void Engine::loadDefaultShaders()
 }
 
 void Engine::start() {
+
+	renderer = new Renderer();
+
     // engine specific initializations
     if(!setupSFML()) {
         isEngineRunning = false;
@@ -44,12 +47,12 @@ void Engine::start() {
         glClearColor( 0.3f, 0.4f, 0.6f, 1.0f );
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-        render();
+		renderer->render();
 
         window->display( );
     }
 
-    // perform shutdown steps
+    // todo: perform shutdown steps
     window->close();
 }
 

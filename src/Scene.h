@@ -20,17 +20,14 @@ public:
 	T* createEntity(string name, Mesh* mesh = nullptr, Material* overrideMat = nullptr);
 	PointLight* createPointLight(glm::vec3 position, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
 	DirectionalLight* createDirectionalLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
-
-	std::vector<Entity*>& getEntities();
-
-	Camera* getMainCamera();
 	void setMainCamera(Camera* camera);
 
-	virtual void update();
+	std::vector<Entity*>& getEntities();
+	std::vector<PointLight*>& getPointLIghts();
+	DirectionalLight* getDirectionalLight();
+	Camera* getMainCamera();
 
-	// temporary function to be moved to renderer class;
-	void setGlobalUniforms(Shader* shader);
-	void RenderEntities();
+	virtual void update();
 };
 
 template<class T>

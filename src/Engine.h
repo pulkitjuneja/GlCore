@@ -6,22 +6,21 @@
 #define GLTESTBED_ENGINE_H
 
 #include "Globals.h"
-
+#include "Renderer.h"
 
 class Engine {
 
-private:
+protected:
     sf::Window* window;
     bool isEngineRunning = true;
 	bool setupSFML();
-
+	Renderer* renderer;
 public:
     static sf::Time deltaTime;
     static sf::Time timeSinceStart;
 	void loadDefaultShaders();
     virtual bool init () = 0 ;
     virtual void update() = 0;
-    virtual void render () = 0;
     void start ();
 };
 
