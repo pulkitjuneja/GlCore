@@ -1,4 +1,4 @@
-#pragma once
+ #pragma once
 
 #ifndef SCENE_H
 #define SCENE_H
@@ -48,4 +48,3 @@ inline T * Scene::createEntity(string name, Mesh* mesh, Material* overrideMat)
 }
 
 #endif
-

@@ -30,7 +30,6 @@ void CameraController::handleRotation()
 		eulerAngleDelta.x = -mouseDelta.y; // vertical rotation describes angle around the x axis
 		eulerAngleDelta.y = mouseDelta.x; // horizontal rotation describes angle around the y axis
 		eulerAngleDelta *= 0.05;
-		std::cout << eulerAngleDelta.x << eulerAngleDelta.y << "\n";
 		camera->transform.rotate(eulerAngleDelta);
 		lastFrameMousePosition = currentMousePosition;
 	} else {

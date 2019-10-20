@@ -1,18 +1,17 @@
-#pragma once
+#pragma once 
 
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#include "Scene.h"
-#include "Globals.h"
+#include "SceneRenderer.h"
 
 class Renderer {
-	Scene* scene;;
+	Scene* scene;
 public:
-	void setGlobalUniforms(Shader* shader);
 	void setScene(Scene* scene);
-	void renderScene();
+	SceneRenderer sceneRenderer;
 	void render();
 };
 
 #endif // !RENDERER_H
+
