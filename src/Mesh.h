@@ -7,6 +7,7 @@
 #include "Globals.h"
 #include <glm/glm.hpp>
 #include "Vertex.h"
+#include "Texture.h"
 #include "Material.h"
 #include <assimp/scene.h>
 #include <assimp/Importer.hpp>

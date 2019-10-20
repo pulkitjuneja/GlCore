@@ -15,6 +15,7 @@
 #include "Mesh.h"
 #include "Globals.h"
 #include "Vertex.h"
+#include "Texture.h"
 
 
 struct EnumClassHash
@@ -30,10 +31,9 @@ class ResourceManager {
 private:
 
 	// Resource Maps
-    std::unordered_map <string, Shader> loadedShaders;
-	std::unordered_map <string, Texture> textures;
-	std::unordered_map<string, Material> materials;
-	std::unordered_map<string, Mesh> loadedMeshes;
+    std::unordered_map <string, Shader*> loadedShaders;
+	std::unordered_map <string, Texture*> textures;
+	std::unordered_map<string, Mesh*> loadedMeshes;
 
 	std::unordered_map <aiTextureType, TextureType, EnumClassHash> textureTypeMap = {
 	{aiTextureType_DIFFUSE, TextureType::DIFFUSE},

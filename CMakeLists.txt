@@ -13,38 +13,19 @@ link_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}/ext/assimp/lib
 )
 
-add_executable(GlCore
-		TestWorld.cpp
-		main.cpp
-		#remove from here
-        src/Globals.h
-        src/Mesh.cpp
-        src/Mesh.h
-        src/ResourceManager.cpp
-        src/ResourceManager.hpp
-        src/Shader.cpp
-        src/Shader.h
-        src/stb_image.cpp
-        src/stb_image.h
-        src/Material.h
-        src/Engine.cpp 
-	    src/Engine.h
-        src/Particle.cpp
-        src/Particle.h
-        src/ParticleManager.cpp
-        src/ParticleManager.h
-		src/Entity.h src/Entity.cpp
-		src/Camera.h src/Camera.cpp
-		src/Transform.h src/Transform.cpp
-		src/Scene.h src/Scene.cpp
-		src/Light.h
-        src/ParticleUpdater.h
-		src/Renderer.h src/Renderer.cpp
-		#utils
-		src/utils/CameraController.h
-		src/utils/CameraController.cpp
-		)
+file(GLOB glcore_src
+    "src/*.h"
+    "src/*.cpp"
+	"src/utils/*.h"
+	"src/utils/*.cpp"
+)
 
+add_executable(GlCore ${glcore_src}
+	TestWorld.cpp
+	main.cpp
+	src/Texture.cpp
+)
+  
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/ext/glm)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/ext/assimp/include)

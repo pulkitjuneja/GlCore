@@ -17,21 +17,3 @@ public:
 
 	Vertex() {}
 };
-
-enum class TextureType {
-	DIFFUSE,
-	SPECULAR
-};
-
-struct Texture {
-
-	unsigned int id;
-	string path;
-	TextureType type;
-
-	Texture(int id, string path, TextureType type) {
-		this->id = id;
-		this->path = path;
-		this->type = type;
-	}
-};
