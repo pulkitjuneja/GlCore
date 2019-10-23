@@ -14,30 +14,30 @@ Texture::Texture(TextureType type) {
 //}
 
 void Texture::bind() {
-	glBindTexture(GL_TEXTURE_2D, textureId);
+	glBindTexture(target, textureId);
 }
 
 void Texture::unBind() {
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(target, 0);
 }
 
-void Texture::setData(unsigned char* data, uint32_t w, uint32_t h, GLenum format) {
+void Texture::setData(unsigned char* data, uint32_t w, uint32_t h, GLenum format, GLenum dataType) {
 	bind();
-	glTexImage2D(GL_TEXTURE_2D, 0, format, w, h, 0, format, GL_UNSIGNED_BYTE, data);
-	glGenerateMipmap(GL_TEXTURE_2D);
+	glTexImage2D(target, 0, format, w, h, 0, format, dataType, data);
+	glGenerateMipmap(target);
 	unBind();
 }
 
 void Texture::setMinMagFilter(GLenum minFilter, GLenum magFilter) {
 	bind();
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilter);
+	glTexParameteri(target, GL_TEXTURE_MIN_FILTER, minFilter);
+	glTexParameteri(target, GL_TEXTURE_MAG_FILTER, magFilter);
 	unBind();
 }
 
 void Texture::setWrapping(GLenum s, GLenum t) {
 	bind();
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, s);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, t);
+	glTexParameteri(target, GL_TEXTURE_WRAP_S, s);
+	glTexParameteri(target, GL_TEXTURE_WRAP_T, t);
 	unBind();
 }

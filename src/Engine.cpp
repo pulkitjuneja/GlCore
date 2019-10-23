@@ -1,8 +1,6 @@
 #include "Engine.h"
 #include "ResourceManager.hpp"
 
-const GLint WIDTH = 1920, HEIGHT = 1080;
-
 sf::Time Engine::deltaTime;
 sf::Time Engine::timeSinceStart;
 
@@ -62,7 +60,7 @@ bool Engine::setupSFML() {
     settings.minorVersion = 3;
     settings.attributeFlags = sf::ContextSettings::Core;
 
-    window = new sf::Window( sf::VideoMode( WIDTH, HEIGHT, 32 ), "OpenGL SFML", sf::Style::Titlebar | sf::Style::Close, settings );
+    window = new sf::Window( sf::VideoMode( screenWidth, screenHeight, 32 ), "OpenGL SFML", sf::Style::Titlebar | sf::Style::Close, settings );
 
     glewExperimental = GL_TRUE;
 

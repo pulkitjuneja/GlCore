@@ -11,10 +11,13 @@
 class Engine {
 
 protected:
+	const GLuint screenHeight = 1080;
+	const GLuint screenWidth = 1920;
     sf::Window* window;
     bool isEngineRunning = true;
 	bool setupSFML();
 	Renderer* renderer;
+
 public:
     static sf::Time deltaTime;
     static sf::Time timeSinceStart;

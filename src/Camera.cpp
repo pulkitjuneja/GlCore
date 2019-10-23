@@ -1,8 +1,12 @@
 #include "Camera.h"
 
-Camera::Camera(glm::vec3 position, glm::vec3 front) {
+Camera::Camera(glm::vec3 position, glm::vec3 front, float fov, float aspect, float near, float far): front(front),
+	fov(fov),
+	nearPlane(near),
+	farPlane(far),
+	aspect(aspect){
+
 	this->transform.setPosition(position);
-	this->front = front;
 	this->up = glm::vec3(0, 1, 0);
 	this->right = glm::normalize(glm::cross(position, -front));
 	this->cameraUP = glm::normalize(glm::cross(-front, right));
@@ -34,7 +38,7 @@ glm::mat4 Camera::getViewMatrix()
 
 glm::mat4 Camera::getProjectionMatrix()
 {
-	return glm::perspective(glm::radians(30.0f), 4.0f / 3.0f, 0.1f, 3000.0f);
+	return glm::perspective(glm::radians(30.0f), aspect, nearPlane, farPlane);
 }
 
 void Camera::setintialRotation()

@@ -107,7 +107,7 @@ Texture *ResourceManager::loadTexture(const string &texturePath, const string &d
 			format = GL_RGB;
 		else if (nrComponents == 4)
 			format = GL_RGBA;
-		tex->setData(data, width, height, format);
+		tex->setData(data, width, height, format, GL_UNSIGNED_BYTE);
 		tex->setWrapping(GL_REPEAT, GL_REPEAT);
 		tex->setMinMagFilter(GL_LINEAR, GL_LINEAR);
 	}
@@ -119,6 +119,17 @@ Texture *ResourceManager::loadTexture(const string &texturePath, const string &d
 	textures.emplace(make_pair(texturePath, tex));
 
 	return textures.find(texturePath)->second;
+}
+
+Texture* ResourceManager::generateTexture(const string& identifier, TextureType textureType, unsigned char* data, const uint32_t& w, const uint32_t& h, GLenum format, GLenum dataType) {
+	if (textures.find(identifier) != textures.end())
+	{
+		return textures.find(identifier)->second;
+	}
+	Texture* tex = new Texture(textureType);
+	tex->setData(data, w, h, format, dataType);
+	textures.emplace(make_pair(identifier, tex));
+	return tex;
 }
 
 Mesh *ResourceManager::loadMesh(string path, int loaderFlags)
