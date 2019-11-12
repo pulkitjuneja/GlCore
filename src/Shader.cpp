@@ -4,9 +4,25 @@
 
 using namespace std;
 
-Shader::Shader(const GLuint shaderProgram, const string &shaderName) {
+Shader::Shader(const GLuint shaderProgram, const string &shaderName, int uniformCount) {
     this->shaderProgram = shaderProgram;
     this->shaderName = shaderName;
+
+	GLint        size;
+	GLenum       type;
+	GLsizei      length;
+	const GLuint bufSize = 64;
+	GLchar       name[bufSize];
+
+	for (int i = 0; i < uniformCount; i++)
+	{
+		glGetActiveUniform(shaderProgram, i, bufSize, &length, &size, &type, name);
+		GLuint loc = glGetUniformLocation(shaderProgram, name);
+
+		if (loc != GL_INVALID_INDEX)
+			uniformLocations.insert(make_pair(name, loc));
+	}
+
 }
 
 void Shader::readFromFile(const string &fileName, char* & shaderContent) {
@@ -22,21 +38,30 @@ void Shader::use() {
 }
 
 void Shader::setBool(const string &name, bool value) const {
-    glUniform1i (glGetUniformLocation(shaderProgram, name.c_str()), (int)value);
+
+    glUniform1i (getUniformLocation(name), (int)value);
 }
 
 void Shader::setInt(const string &name, int value) const {
-    glUniform1i (glGetUniformLocation(shaderProgram, name.c_str()), value);
+    glUniform1i (getUniformLocation(name), value);
 }
 
 void Shader::setFloat(const string &name, float value) const {
-    glUniform1f (glGetUniformLocation(shaderProgram, name.c_str()), value);
+    glUniform1f (getUniformLocation(name), value);
 }
 
 void Shader::setFloat3(const string &name, float value1, float value2, float value3) {
-    glUniform3f(glGetUniformLocation(shaderProgram, name.c_str()), value1, value2, value3);
+    glUniform3f(getUniformLocation(name), value1, value2, value3);
 }
 
 void Shader::setMat4(const string &name, GLfloat *matrix) {
-    glUniformMatrix4fv(glGetUniformLocation(shaderProgram,name.c_str()),1,GL_FALSE,matrix);
+    glUniformMatrix4fv(getUniformLocation(name),1,GL_FALSE,matrix);
+}
+
+GLuint Shader::getUniformLocation(const string & name) const
+{
+	if (uniformLocations.find(name) == uniformLocations.end())
+		return -1;
+	else
+		return uniformLocations.find(name)->second;
 }

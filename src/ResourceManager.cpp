@@ -76,10 +76,13 @@ void ResourceManager::loadShader(const std::string &vertexShaderPath, const std:
 							<< infoLog << std::endl;
 	}
 
+	int uniformCount = 0;
+	glGetProgramiv(shaderProgram, GL_ACTIVE_UNIFORMS, &uniformCount);
+
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
 
-	loadedShaders.insert(make_pair(shaderName, new Shader(shaderProgram, shaderName)));
+	loadedShaders.insert(make_pair(shaderName, new Shader(shaderProgram, shaderName, uniformCount)));
 }
 
 Texture *ResourceManager::loadTexture(const string &texturePath, const string &directory, TextureType type)
@@ -109,7 +112,7 @@ Texture *ResourceManager::loadTexture(const string &texturePath, const string &d
 			format = GL_RGBA;
 		tex->setData(data, width, height, format, GL_UNSIGNED_BYTE);
 		tex->setWrapping(GL_REPEAT, GL_REPEAT);
-		tex->setMinMagFilter(GL_LINEAR, GL_LINEAR);
+		tex->setMinMagFilter(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
 	}
 	else
 	{
