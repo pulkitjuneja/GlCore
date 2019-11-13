@@ -24,6 +24,7 @@
 #include <SFML/Window.hpp>
 #include <map>
 #include <cstring>
+#include "Constants.h"
 
 extern std::string dpath;
 

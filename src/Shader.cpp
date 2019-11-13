@@ -38,24 +38,38 @@ void Shader::use() {
 }
 
 void Shader::setBool(const string &name, bool value) const {
-
-    glUniform1i (getUniformLocation(name), (int)value);
+	GLuint loc = getUniformLocation(name);
+	if (loc != -1) {
+		glUniform1i(getUniformLocation(name), (int)value);
+	}
 }
 
 void Shader::setInt(const string &name, int value) const {
-    glUniform1i (getUniformLocation(name), value);
+	GLuint loc = getUniformLocation(name);
+	if (loc != -1) {
+		glUniform1i(getUniformLocation(name), value);
+	}
 }
 
 void Shader::setFloat(const string &name, float value) const {
-    glUniform1f (getUniformLocation(name), value);
+	GLuint loc = getUniformLocation(name);
+	if (loc != -1) {
+		glUniform1f(getUniformLocation(name), value);
+	}
 }
 
 void Shader::setFloat3(const string &name, float value1, float value2, float value3) {
-    glUniform3f(getUniformLocation(name), value1, value2, value3);
+	GLuint loc = getUniformLocation(name);
+	if (loc != -1) {
+		glUniform3f(getUniformLocation(name), value1, value2, value3);
+	}
 }
 
 void Shader::setMat4(const string &name, GLfloat *matrix) {
-    glUniformMatrix4fv(getUniformLocation(name),1,GL_FALSE,matrix);
+	GLuint loc = getUniformLocation(name);
+	if (loc != -1) {
+		glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, matrix);
+	}
 }
 
 GLuint Shader::getUniformLocation(const string & name) const

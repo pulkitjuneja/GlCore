@@ -231,7 +231,20 @@ Mesh *ResourceManager::loadMesh(string path, int loaderFlags)
 	return loadedMeshes.find(path)->second;
 }
 
-Shader *ResourceManager::getShader(string shaderName)
+Texture * ResourceManager::getTexture(const string & textureName)
+{
+	if (textures.find(textureName) != textures.end())
+	{
+		return textures.find(textureName)->second;
+	}
+	else
+	{
+		cout << "Shader " << textureName << " does not exist";
+		return nullptr;
+	}
+}
+
+Shader *ResourceManager::getShader(const string& shaderName)
 {
 	if (loadedShaders.find(shaderName) != loadedShaders.end())
 	{

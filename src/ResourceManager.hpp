@@ -56,7 +56,8 @@ public:
 	Mesh* loadMesh(string path, int loaderFlags = aiProcess_Triangulate | aiProcess_FlipUVs);
 
 	//Getters
-	Shader* getShader(string shaderName);
+	Shader* getShader(const string &shaderName);
+	Texture* getTexture(const string &textureName);
 };
 
 

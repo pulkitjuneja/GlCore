@@ -5,12 +5,14 @@
 
 #include "Scene.h"
 #include "Globals.h"
+#include "ResourceManager.hpp"
 
 class SceneRenderer {
 	Scene* scene;
 public:
 	void setGlobalUniforms(Shader* shader);
-	void renderScene(Scene* scene);
+	void bindGlobalMaps();
+	void renderScene(Scene* scene, Material* overrideMaterial = nullptr);
 };
 
 #endif // !SCENERENDERER_H

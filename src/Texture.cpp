@@ -14,31 +14,30 @@ Texture::Texture(TextureType type) {
 //	glDeleteTextures(1, &textureId);
 //}
 
-void Texture::bind() {
+void Texture::bind(int textureUnit) {
+	glActiveTexture(textureUnit);
 	glBindTexture(target, textureId);
 }
 
-void Texture::unBind() {
+void Texture::setData(unsigned char* data, uint32_t w, uint32_t h, GLenum format, GLenum dataType) {
+	glBindTexture(target, textureId);
+	glTexImage2D(target, 0, format, w, h, 0, format, dataType, data);
+	if (data) {
+		glGenerateMipmap(target);
+	}
 	glBindTexture(target, 0);
 }
 
-void Texture::setData(unsigned char* data, uint32_t w, uint32_t h, GLenum format, GLenum dataType) {
-	bind();
-	glTexImage2D(target, 0, format, w, h, 0, format, dataType, data);
-	glGenerateMipmap(target);
-	unBind();
-}
-
 void Texture::setMinMagFilter(GLenum minFilter, GLenum magFilter) {
-	bind();
+	glBindTexture(target, textureId);
 	glTexParameteri(target, GL_TEXTURE_MIN_FILTER, minFilter);
 	glTexParameteri(target, GL_TEXTURE_MAG_FILTER, magFilter);
-	unBind();
+	glBindTexture(target, 0);
 }
 
 void Texture::setWrapping(GLenum s, GLenum t) {
-	bind();
+	glBindTexture(target, textureId);
 	glTexParameteri(target, GL_TEXTURE_WRAP_S, s);
 	glTexParameteri(target, GL_TEXTURE_WRAP_T, t);
-	unBind();
+	glBindTexture(target, 0);
 }

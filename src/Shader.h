@@ -9,10 +9,10 @@ using namespace std;
 
 class Shader {
     void readFromFile (const string &fileName, char* & shaderContent);
-    GLuint shaderProgram;
-    string shaderName;
+	GLuint shaderProgram;
 	unordered_map<string, GLuint> uniformLocations;
 public:
+	string shaderName;
     Shader (const GLuint shaderProgram, const string &shaderName, int uniformCount);
     void use();
     void setBool(const string &name, bool value) const;

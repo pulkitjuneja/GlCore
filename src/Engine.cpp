@@ -9,6 +9,7 @@ void Engine::loadDefaultShaders()
 	ResourceManager::getInstance()->loadShader("Shaders/basic.vert", "Shaders/basic.frag", "defaultShader");
 	ResourceManager::getInstance()->loadShader("Shaders/TexturedMeshUnlit.vert", "Shaders/TexturedMeshUnlit.frag", "texturedMeshUnlit");
 	ResourceManager::getInstance()->loadShader("Shaders/TexturedMesh.vert", "Shaders/TexturedMesh.frag", "texturedMeshShader");
+	ResourceManager::getInstance()->loadShader("Shaders/DepthMap.vert", "Shaders/DepthMap.frag", "DepthMap");
 }
 
 void Engine::start() {

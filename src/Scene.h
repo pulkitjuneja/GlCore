@@ -14,7 +14,11 @@ protected:
 	std::vector<PointLight*> pointLights;
 	DirectionalLight* directionalLight;
 	Camera* mainCamera;
+
 public:
+
+	//TODO: remove this implmenet uniform buffers to fix uniform assignement;
+	glm::mat4 directionalLightSpaceMatrix;
 
 	template <class T >
 	T* createEntity(string name, Mesh* mesh = nullptr, Material* overrideMat = nullptr);

@@ -19,8 +19,7 @@ public:
 	GLenum target;
 
 	Texture(TextureType type);
-	void bind();
-	void unBind();
+	void bind(int textureUnit);
 	void setData(unsigned char* data, uint32_t w, uint32_t h, GLenum format, GLenum dataType);
 	void setMinMagFilter(GLenum minFilter, GLenum magFilter);
 	void setWrapping(GLenum s, GLenum t);

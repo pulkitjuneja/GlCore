@@ -15,10 +15,11 @@ class ShadowMapRenderer {
 	int SHADOW_WIDTH = 1024;
 	int SHADOW_HEIGHT = 1024;
 	SceneRenderer sceneRenderer;
+	Material* depthMapMaterial;
 public:
 	ShadowMapRenderer();
 	void render(Scene* scene);
-	glm::mat4 updateLightProjectionMatrix (DirectionalLight* directionalLight);
+	void updateLightSpaceMatrix (Scene* scene);
 };
 
 #endif // !SHADOWMAPRENDERER_H

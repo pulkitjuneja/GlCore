@@ -25,7 +25,7 @@ public:
 		Entity* sponzaEntity = scene->createEntity<Entity>("SponzaEntity", ResourceManager::getInstance()->loadMesh("Assets/Meshes/Sponza/sponza.obj"));
 		sponzaEntity->transfrom.setScale(glm::vec3(0.3, 0.3, 0.3));
 
-		scene->setMainCamera(new Camera(glm::vec3(0, 0, -15), glm::vec3(0, 0, 1), 90.0f, float(screenWidth)/float(screenHeight), 8.0f, 1000.0f));
+		scene->setMainCamera(new Camera(glm::vec3(-50, 30, 0), glm::vec3(1, -0.04f, -0.06f), 90.0f, float(screenWidth)/float(screenHeight), 8.0f, 1000.0f));
 		scene->createPointLight(glm::vec3(-10, 10, 5), glm::vec3(0.01, 0.01, 0.01), glm::vec3(1, 1, 1), glm::vec3(1, 1, 1));
 		scene->createPointLight(glm::vec3(300, 10, 5), glm::vec3(0.01, 0.01, 0.01), glm::vec3(1, 1, 1), glm::vec3(1, 1, 1));
 		scene->createDirectionalLight(glm::vec3(0, -1, 0), glm::vec3(0.01, 0.01, 0.01), glm::vec3(1, 1, 0.8), glm::vec3(1, 1, 0.8));

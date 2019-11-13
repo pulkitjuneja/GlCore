@@ -8,7 +8,7 @@
 #define FRAMEBUFFER_H
 
 class FrameBuffer {
-	GLuint fboId;
+	unsigned int fboId;
 public:
 	FrameBuffer();
 	void attachDepthTarget(Texture* texture, uint32_t mipLevel);

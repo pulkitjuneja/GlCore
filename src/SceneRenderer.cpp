@@ -29,11 +29,22 @@ void SceneRenderer::setGlobalUniforms(Shader* shader)
 		shader->setFloat(prefixString + "quadraticAttenuation", 0.00007);
 	}
 	shader->setInt("pointLightCount", pointLights.size());
-
 	shader->setFloat3("cameraPosition", mainCamera->transform.getPosition().x, mainCamera->transform.getPosition().y, mainCamera->transform.getPosition().z);
+
+	// Uniforms for shadow mapping
+	shader->setMat4("lightSpaceMatrix", &scene->directionalLightSpaceMatrix[0][0]);
+	shader->setInt("shadowMap", 4);
 }
 
-void SceneRenderer::renderScene(Scene * scene)
+void SceneRenderer::bindGlobalMaps()
+{
+	Texture* depthMapTexture = ResourceManager::getInstance()->getTexture(SHADOW_MAP);
+	if (depthMapTexture) {
+		depthMapTexture->bind(4);
+	}
+}
+
+void SceneRenderer::renderScene(Scene * scene, Material* overrideMaterial)
 {
 	this->scene = scene;
 	std::vector<Entity*> entities = scene->getEntities();;
@@ -48,20 +59,37 @@ void SceneRenderer::renderScene(Scene * scene)
 		Mesh* currentMesh = ent->mesh;
 		glBindVertexArray(currentMesh->VAO);
 
+		Shader* currentShader = nullptr;
+		if(overrideMaterial) {
+			currentShader = overrideMaterial->getShader();
+			currentShader->use();
+			setGlobalUniforms(currentShader);
+		}
+
 		for (int i = 0; i < currentMesh->subMeshes.size(); i++) {
 
 			SubMesh currentSubMesh = currentMesh->subMeshes[i];
-			Shader* shader = currentSubMesh.material->getShader();
+			Shader* submeshShader = currentSubMesh.material->getShader();
 
-			setGlobalUniforms(shader);
-			shader->setMat4("modelMatrix", &ent->getTransform()->getTransformationMatrix()[0][0]);
+			if (!currentShader) {
+				currentShader = submeshShader;
+				currentShader->use();
+				setGlobalUniforms(currentShader);
+			}
+
+			if (!overrideMaterial && submeshShader->shaderName.compare(currentShader->shaderName)) {
+				currentShader = submeshShader;
+				currentShader->use();
+				setGlobalUniforms(currentShader);
+			}
+
+			currentShader->setMat4("modelMatrix", &ent->getTransform()->getTransformationMatrix()[0][0]);
 
 			unsigned int diffuseNr = 0;
 			unsigned int specularNr = 0;
 
 			for (int j = 0; j < currentSubMesh.material->textures.size(); j++) {
 				Texture* currentTexture = currentSubMesh.material->textures[j];
-				glActiveTexture(GL_TEXTURE0 + j);
 				string name, number;
 				if (currentTexture->type == TextureType::DIFFUSE) {
 					name = "texture_diffuse";
@@ -72,13 +100,12 @@ void SceneRenderer::renderScene(Scene * scene)
 					number = std::to_string(specularNr++);
 				}
 
-				shader->setInt("material." + name + "[" + number + "]", j);
-				glBindTexture(GL_TEXTURE_2D, currentTexture->textureId);
+				currentTexture->bind(GL_TEXTURE0 + j);
+				currentShader->setInt("material." + name + "[" + number + "]", j);
 			}
 
-			shader->setInt("material.specularCount", specularNr);
-			shader->setInt("material.diffuseCount", diffuseNr);
-			shader->use();
+			currentShader->setInt("material.specularCount", specularNr);
+			currentShader->setInt("material.diffuseCount", diffuseNr);
 			glDrawElementsBaseVertex(GL_TRIANGLES, currentSubMesh.indexCount, GL_UNSIGNED_INT, (void*)(sizeof(unsigned int) * currentSubMesh.baseIndex), currentSubMesh.baseVertex);
 
 		}
