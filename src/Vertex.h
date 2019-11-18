@@ -1,5 +1,7 @@
 #pragma once
 
+#ifndef VERTEX_H
+
 #include <unordered_map>
 #include <glm/glm.hpp>
 
@@ -17,3 +19,5 @@ public:
 
 	Vertex() {}
 };
+
+#endif // !VERTEX_H

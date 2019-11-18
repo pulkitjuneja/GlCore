@@ -1,4 +1,3 @@
-#include "Globals.h"
 #include "Mesh.h"
 #include "ResourceManager.hpp"
 

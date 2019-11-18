@@ -1,8 +1,7 @@
 #pragma once
-#ifndef GLTESTBED_MATERIAL_H
-#define GLTESTBED_MATERIAL_H
+#ifndef MATERIAL_H
+#define MATERIAL_H
 
-#include <Shader.h>
 #include "Vertex.h"
 #include "Texture.h"
 #include "Shader.h"
@@ -19,4 +18,4 @@ private:
 };
 
 
-#endif //GLTESTBED_MATERIAL_H
+#endif //MATERIAL_H

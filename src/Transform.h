@@ -1,7 +1,8 @@
 #pragma once
 
 #ifndef TRANSFORM_H
-#define TRANSFORM_
+#define TRANSFORM_H
+
 #define GLM_ENABLE_EXPERIMENTAL
 
 #include <glm/glm.hpp>

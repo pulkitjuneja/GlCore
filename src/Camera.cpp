@@ -55,15 +55,15 @@ glm::vec3 * Camera::getFrustumCorners()
 
 	glm::vec3* corners = new glm::vec3[8];
 
-	corners[0] = nc - up * nearHeight - right * nearWidth; // near-bottom-left
-	corners[1] = nc + up * nearHeight - right * nearWidth; // near-top-left
-	corners[2] = nc + up * nearHeight + right * nearWidth; // near-top-right
-	corners[3] = nc - up * nearHeight + right * nearWidth; // near-bottom-right
+	corners[0] = nc - (up * nearHeight) - (right * nearWidth); // near-bottom-left
+	corners[1] = nc + (up * nearHeight) - (right * nearWidth); // near-top-left
+	corners[2] = nc + (up * nearHeight) + (right * nearWidth); // near-top-right
+	corners[3] = nc - (up * nearHeight) + (right * nearWidth); // near-bottom-right
 
-	corners[4] = fc - up * farHeight - right * farWidth; // far-bottom-left
-	corners[5] = fc + up * farHeight - right * farWidth; // far-top-left
-	corners[6] = fc + up * farHeight + right * farWidth; // far-top-right
-	corners[7] = fc - up * farHeight + right * farWidth; // far-bottom-right
+	corners[4] = fc - (up * farHeight) - (right * farWidth); // far-bottom-left
+	corners[5] = fc + (up * farHeight) - (right * farWidth); // far-top-left
+	corners[6] = fc + (up * farHeight) + (right * farWidth); // far-top-right
+	corners[7] = fc - (up * farHeight) + (right * farWidth); // far-bottom-right
 
 	return corners;
 }

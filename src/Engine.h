@@ -2,8 +2,8 @@
 // Created by Pulkit Juneja on 02/08/18.
 //
 
-#ifndef GLTESTBED_ENGINE_H
-#define GLTESTBED_ENGINE_H
+#ifndef ENGINE_H
+#define ENGINE_H
 
 #include "Globals.h"
 #include "Renderer.h"
@@ -11,8 +11,6 @@
 class Engine {
 
 protected:
-	const GLuint screenHeight = 1080;
-	const GLuint screenWidth = 1920;
     sf::Window* window;
     bool isEngineRunning = true;
 	bool setupSFML();
@@ -28,4 +26,4 @@ public:
 };
 
 
-#endif //GLTESTBED_ENGINE_H
+#endif //ENGINE_H

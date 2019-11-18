@@ -16,6 +16,10 @@
 #include "Globals.h"
 #include "Vertex.h"
 #include "Texture.h"
+#include <assimp/scene.h>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 
 struct EnumClassHash
@@ -52,7 +56,9 @@ public:
 	//Resource Loaders
 	void loadShader(const string &vertexShaderPath, const string &fragmentShaderPath, const string& shaderName);
     Texture* loadTexture (const string& texturePath, const string& directory, TextureType textureType);
-	Texture* generateTexture(const string& identifier, TextureType textureType, unsigned char* data, const uint32_t& w, const uint32_t& h, GLenum format, GLenum dataType);
+	Texture* generateTexture(const string& identifier, TextureType textureType, unsigned char* data, const uint32_t& w,
+		const uint32_t& h, GLenum format, GLenum dataType, GLenum minFilter = GL_NEAREST, GLenum magFilter = GL_NEAREST, 
+		GLenum s = GL_REPEAT, GLenum t= GL_REPEAT);
 	Mesh* loadMesh(string path, int loaderFlags = aiProcess_Triangulate | aiProcess_FlipUVs);
 
 	//Getters

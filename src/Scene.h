@@ -4,8 +4,8 @@
 #define SCENE_H
 
 #include <unordered_map>
-#include <Entity.h>
-#include <Camera.h>
+#include "Entity.h"
+#include "Camera.h""
 #include "Light.h"
 
 class Scene {

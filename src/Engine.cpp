@@ -9,17 +9,18 @@ void Engine::loadDefaultShaders()
 	ResourceManager::getInstance()->loadShader("Shaders/basic.vert", "Shaders/basic.frag", "defaultShader");
 	ResourceManager::getInstance()->loadShader("Shaders/TexturedMeshUnlit.vert", "Shaders/TexturedMeshUnlit.frag", "texturedMeshUnlit");
 	ResourceManager::getInstance()->loadShader("Shaders/TexturedMesh.vert", "Shaders/TexturedMesh.frag", "texturedMeshShader");
-	ResourceManager::getInstance()->loadShader("Shaders/DepthMap.vert", "Shaders/DepthMap.frag", "DepthMap");
+	ResourceManager::getInstance()->loadShader("Shaders/DepthMap.vert", "Shaders/DepthMap.frag", "depthMap");
 }
 
 void Engine::start() {
-
-	renderer = new Renderer();
 
     // engine specific initializations
     if(!setupSFML()) {
         isEngineRunning = false;
     }
+
+	renderer = new Renderer();
+
     if(!init()) {
         isEngineRunning = false;
     }
@@ -61,7 +62,7 @@ bool Engine::setupSFML() {
     settings.minorVersion = 3;
     settings.attributeFlags = sf::ContextSettings::Core;
 
-    window = new sf::Window( sf::VideoMode( screenWidth, screenHeight, 32 ), "OpenGL SFML", sf::Style::Titlebar | sf::Style::Close, settings );
+    window = new sf::Window( sf::VideoMode( SCREEN_WIDTH, SCREEN_HEIGHT, 32 ), "OpenGL SFML", sf::Style::Titlebar | sf::Style::Close, settings );
 
     glewExperimental = GL_TRUE;
 
@@ -70,6 +71,9 @@ bool Engine::setupSFML() {
         std::cout << "Failed to initialize GLEW" << std::endl;
         return false;
     }
+
+	std::string versionString = std::string((const char*)glGetString(GL_VERSION));
+	cout << versionString.c_str();
 
     // Load Default Shaders
 

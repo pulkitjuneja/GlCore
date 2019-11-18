@@ -12,11 +12,11 @@
 class ShadowMapRenderer {
 	Texture* depthMap;
 	FrameBuffer* depthMapFbo;
-	int SHADOW_WIDTH = 1024;
-	int SHADOW_HEIGHT = 1024;
 	SceneRenderer sceneRenderer;
 	Material* depthMapMaterial;
 public:
+	int SHADOW_WIDTH = 1920;
+	int SHADOW_HEIGHT = 1080;
 	ShadowMapRenderer();
 	void render(Scene* scene);
 	void updateLightSpaceMatrix (Scene* scene);

@@ -23,6 +23,7 @@
 #include "stb_image.h"
 #include <SFML/Window.hpp>
 #include <map>
+#include <algorithm>
 #include <cstring>
 #include "Constants.h"
 

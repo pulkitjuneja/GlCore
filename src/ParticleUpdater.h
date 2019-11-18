@@ -1,5 +1,7 @@
-#ifndef GLPARTICLES_PARTICLEUPDATER_H
-#define GLPARTICLES_PARTICLEUPDATER_H
+#pragma once
+
+#ifndef PARTICLEUPDATER_H
+#define PARTICLEUPDATER_H
 
 #include "Globals.h"
 #include "Particle.h"
@@ -10,6 +12,6 @@ public:
     virtual void spawnInitial (std::vector<Particle*> &emptyContainer) = 0;
 };
 
-#endif //GLPARTICLES_PARTICLEUPDATER_H
+#endif //PARTICLEUPDATER_H
 
 

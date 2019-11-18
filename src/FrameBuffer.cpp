@@ -13,7 +13,7 @@ void FrameBuffer::unBind() {
 }
 
 void FrameBuffer::attachDepthTarget(Texture* texture, uint32_t mipLevel) {
-	texture->bind(0);
+	texture->bind(GL_TEXTURE0);
 	bind();
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, texture->target, texture->textureId, mipLevel);
 	glDrawBuffer(GL_NONE);

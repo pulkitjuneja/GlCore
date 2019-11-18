@@ -2,8 +2,8 @@
 // Created by Pulkit Juneja on 02/08/18.
 //
 
-#ifndef GLTESTBED_CAMERA_H
-#define GLTESTBED_CAMERA_H
+#ifndef CAMERA_H
+#define CAMERA_H
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>

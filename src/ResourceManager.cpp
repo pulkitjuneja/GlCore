@@ -124,13 +124,16 @@ Texture *ResourceManager::loadTexture(const string &texturePath, const string &d
 	return textures.find(texturePath)->second;
 }
 
-Texture* ResourceManager::generateTexture(const string& identifier, TextureType textureType, unsigned char* data, const uint32_t& w, const uint32_t& h, GLenum format, GLenum dataType) {
+Texture* ResourceManager::generateTexture(const string& identifier, TextureType textureType, unsigned char* data, const uint32_t& w, 
+	const uint32_t& h, GLenum format, GLenum dataType, GLenum minFilter, GLenum magFilter, GLenum s, GLenum t) {
 	if (textures.find(identifier) != textures.end())
 	{
 		return textures.find(identifier)->second;
 	}
 	Texture* tex = new Texture(textureType);
 	tex->setData(data, w, h, format, dataType);
+	tex->setMinMagFilter(minFilter, magFilter);
+	tex->setWrapping(s, t);
 	textures.emplace(make_pair(identifier, tex));
 	return tex;
 }
