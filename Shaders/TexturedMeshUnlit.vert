@@ -7,12 +7,12 @@ uniform mat4 modelMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
 
-out vec3 vert_normal;
-out vec2 vert_texCoords;
+out vec3 vertNormal;
+out vec2 vertTexCoords;
 
 void main() {
 	vec4 homogenousVertexPosition = vec4(position.x, position.y, position.z, 1.0);
-	vert_normal = normal;
-	vert_texCoords = texCoords;
+	vertNormal = normal;
+	vertTexCoords = texCoords;
 	gl_Position = projectionMatrix * viewMatrix * modelMatrix * homogenousVertexPosition;
 }

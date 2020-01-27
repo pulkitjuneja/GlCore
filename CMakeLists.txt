@@ -23,7 +23,7 @@ add_executable(GlCore ${glcore_src}
 	main.cpp
 	src/Texture.cpp
 )
-  
+ 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/ext/glm)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/ext/assimp/include)
