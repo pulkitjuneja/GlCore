@@ -3,15 +3,11 @@
 #ifndef Mesh_h
 #define Mesh_h
 
-#include <Material.h>
 #include "Globals.h"
 #include <glm/glm.hpp>
 #include "Vertex.h"
+#include "Texture.h"
 #include "Material.h"
-#include <assimp/scene.h>
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
 
 struct SubMesh {
 	Material* material;

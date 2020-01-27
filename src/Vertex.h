@@ -1,5 +1,7 @@
 #pragma once
 
+#ifndef VERTEX_H
+
 #include <unordered_map>
 #include <glm/glm.hpp>
 
@@ -18,20 +20,4 @@ public:
 	Vertex() {}
 };
 
-enum class TextureType {
-	DIFFUSE,
-	SPECULAR
-};
-
-struct Texture {
-
-	unsigned int id;
-	string path;
-	TextureType type;
-
-	Texture(int id, string path, TextureType type) {
-		this->id = id;
-		this->path = path;
-		this->type = type;
-	}
-};
+#endif // !VERTEX_H

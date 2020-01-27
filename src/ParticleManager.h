@@ -1,11 +1,9 @@
-//
-// Created by Pulkit Juneja on 08/08/18.
-//
+#pragma once
 
-#ifndef GLPARTICLES_PARTICLEMANAGER_H
-#define GLPARTICLES_PARTICLEMANAGER_H
+#ifndef PARTICLEMANAGER_H
+#define PARTICLEMANAGER_H
 
-#include <string>
+#include "Globals.h"
 #include "Particle.h"
 #include "Shader.h"
 #include "ParticleUpdater.h"
@@ -45,4 +43,4 @@ public:
     void updateBuffers ();
 };
 
-#endif //GLPARTICLES_PARTICLEMANAGER_H
+#endif //PARTICLEMANAGER_H

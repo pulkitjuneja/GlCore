@@ -1,8 +1,8 @@
 #version 330 core
 out vec4 FragColor;
 
-in vec3 vert_normal;
-in vec2 vert_texCoords;
+in vec3 vertNormal;
+in vec2 vertTexCoords;
 
 struct Material {
 	int diffuseCount;
@@ -15,5 +15,5 @@ uniform Material material;
 
 void main()
 {
-	FragColor = texture(material.texture_diffuse[0],vert_texCoords);
+	FragColor = texture(material.texture_diffuse[0],vertTexCoords);
 }

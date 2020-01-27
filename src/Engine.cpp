@@ -1,8 +1,6 @@
 #include "Engine.h"
 #include "ResourceManager.hpp"
 
-const GLint WIDTH = 1920, HEIGHT = 1080;
-
 sf::Time Engine::deltaTime;
 sf::Time Engine::timeSinceStart;
 
@@ -11,13 +9,18 @@ void Engine::loadDefaultShaders()
 	ResourceManager::getInstance()->loadShader("Shaders/basic.vert", "Shaders/basic.frag", "defaultShader");
 	ResourceManager::getInstance()->loadShader("Shaders/TexturedMeshUnlit.vert", "Shaders/TexturedMeshUnlit.frag", "texturedMeshUnlit");
 	ResourceManager::getInstance()->loadShader("Shaders/TexturedMesh.vert", "Shaders/TexturedMesh.frag", "texturedMeshShader");
+	ResourceManager::getInstance()->loadShader("Shaders/DepthMap.vert", "Shaders/DepthMap.frag", "depthMap");
 }
 
 void Engine::start() {
+
     // engine specific initializations
     if(!setupSFML()) {
         isEngineRunning = false;
     }
+
+	renderer = new Renderer();
+
     if(!init()) {
         isEngineRunning = false;
     }
@@ -41,15 +44,12 @@ void Engine::start() {
         timeSinceStart += deltaTime;
         update();
 
-        glClearColor( 0.3f, 0.4f, 0.6f, 1.0f );
-        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-
-        render();
+		renderer->render();
 
         window->display( );
     }
 
-    // perform shutdown steps
+    // todo: perform shutdown steps
     window->close();
 }
 
@@ -62,7 +62,7 @@ bool Engine::setupSFML() {
     settings.minorVersion = 3;
     settings.attributeFlags = sf::ContextSettings::Core;
 
-    window = new sf::Window( sf::VideoMode( WIDTH, HEIGHT, 32 ), "OpenGL SFML", sf::Style::Titlebar | sf::Style::Close, settings );
+    window = new sf::Window( sf::VideoMode( SCREEN_WIDTH, SCREEN_HEIGHT, 32 ), "OpenGL SFML", sf::Style::Titlebar | sf::Style::Close, settings );
 
     glewExperimental = GL_TRUE;
 
@@ -71,6 +71,9 @@ bool Engine::setupSFML() {
         std::cout << "Failed to initialize GLEW" << std::endl;
         return false;
     }
+
+	std::string versionString = std::string((const char*)glGetString(GL_VERSION));
+	cout << versionString.c_str();
 
     // Load Default Shaders
 

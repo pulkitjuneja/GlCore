@@ -1,10 +1,5 @@
-//
-// Created by Pulkit Juneja on 08/08/18.
-//
-
 #include "ParticleManager.h"
 #include "ResourceManager.hpp"
-#include <string>
 
 std::vector<GLfloat> billBoardVertexData = std::vector<GLfloat>{
         -0.5f, -0.5f, 0.0f,

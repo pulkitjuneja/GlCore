@@ -24,13 +24,18 @@ struct DirectionalLight {
 	vec3 ambient;
 };
 
-in vec3 vert_normal;
-in vec2 vert_texCoords;
-in vec3 fragPos;
+in VS_OUT {
+    vec3 fragPos;
+    vec3 vertNormal;
+    vec2 texCoords;
+    vec4 fragPosLightSpace;
+} vsOut;
+
 
 uniform PointLight pointLights[10];
 uniform int pointLightCount;
 uniform DirectionalLight directionalLight;
+uniform sampler2D shadowMap;
 
 uniform Material material;
 uniform vec3 cameraPosition;
@@ -39,20 +44,20 @@ out vec4 FragColor;
 
 vec3 calculatePointLight (PointLight pointLight, vec3 normal, vec3 viewDir) {
 	
-	vec3 diffuseColor = vec3(texture(material.texture_diffuse[0],vert_texCoords));
+	vec3 diffuseColor = vec3(texture(material.texture_diffuse[0],vsOut.texCoords));
 	vec3 specularStrength;
 
 	if(material.specularCount > 0) {
-		specularStrength  = vec3(texture(material.texture_specular[0], vert_texCoords));
+		specularStrength  = vec3(texture(material.texture_specular[0], vsOut.texCoords));
 	} else {
 		specularStrength = vec3(0.1,0.1,0.1);
 	}
 
-	vec3 lightDir = normalize(pointLight.position - fragPos);
+	vec3 lightDir = normalize(pointLight.position - vsOut.fragPos);
 	float diff = max(dot(normal, lightDir), 0.0);
 	vec3 reflectDir = reflect(-lightDir, normal);
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
-	float distance = length(pointLight.position - fragPos);
+	float distance = length(pointLight.position - vsOut.fragPos);
 
 	float attenuation = 1.0/(1.0 + pointLight.linearAttenuation*distance + pointLight.quadraticAttenuation * (distance*distance));
 
@@ -63,12 +68,21 @@ vec3 calculatePointLight (PointLight pointLight, vec3 normal, vec3 viewDir) {
 	return (ambient + diffuse + specular);
 }
 
+float ShadowCalculation(vec4 fragPosLightSpace)
+{
+	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+	projCoords = projCoords * 0.5 + 0.5; 
+	float closestDepth = texture(shadowMap, projCoords.xy).r;
+	float currentDepth = projCoords.z;
+	return  currentDepth > closestDepth  ? 1.0 : 0.0;
+}
+
 vec3 calculateDirectionalLight (vec3 normal, vec3 viewDir) {
-	vec3 diffuseColor = vec3(texture(material.texture_diffuse[0],vert_texCoords));
+	vec3 diffuseColor = vec3(texture(material.texture_diffuse[0],vsOut.texCoords));
 	vec3 specularStrength;
 
 	if(material.specularCount > 0) {
-		specularStrength  = vec3(texture(material.texture_specular[0], vert_texCoords));
+		specularStrength  = vec3(texture(material.texture_specular[0], vsOut.texCoords));
 	} else {
 		specularStrength = vec3(0.1,0.1,0.1);
 	}
@@ -78,9 +92,11 @@ vec3 calculateDirectionalLight (vec3 normal, vec3 viewDir) {
     vec3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0),32);
 
+	float shadow = ShadowCalculation(vsOut.fragPosLightSpace);
+
 	vec3 ambient  = directionalLight.ambient  * diffuseColor;
-	vec3 diffuse  = directionalLight.diffuse  * diff * diffuseColor;
-	vec3 specular = directionalLight.specular * spec * specularStrength;
+	vec3 diffuse  = (1.0 - shadow)*(directionalLight.diffuse  * diff) * diffuseColor;
+	vec3 specular = (1.0 - shadow)*(directionalLight.specular * spec) * specularStrength;
 
 		
 	return (ambient + diffuse + specular);
@@ -88,8 +104,8 @@ vec3 calculateDirectionalLight (vec3 normal, vec3 viewDir) {
 
 void main()
 {
-	vec3 normal = normalize(vert_normal);
-	vec3 viewDir = normalize(cameraPosition - fragPos);
+	vec3 normal = normalize(vsOut.vertNormal);
+	vec3 viewDir = normalize(cameraPosition - vsOut.fragPos);
 	vec3 result = vec3(0,0,0);
 
 	result += calculateDirectionalLight(normal, viewDir);

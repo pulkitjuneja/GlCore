@@ -6,15 +6,20 @@ layout (location = 2) in vec2 texCoords;
 uniform mat4 modelMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
+uniform mat4 lilghtSpaceMatrix;
 
-out vec3 vert_normal;
-out vec2 vert_texCoords;
-out vec3 fragPos;
+out VS_OUT {
+    vec3 fragPos;
+    vec3 vertNormal;
+    vec2 texCoords;
+    vec4 fragPosLightSpace;
+} vsOut;
 
 void main() {
-	vec4 homogenousVertexPosition = vec4(position.x, position.y, position.z, 1.0);
-	vert_normal = mat3(inverse(transpose(modelMatrix)))*normal;
-	vert_texCoords = texCoords;
-	fragPos = vec3(modelMatrix* homogenousVertexPosition);
+	vec4 homogenousVertexPosition = vec4(position, 1.0);
+	vsOut.vertNormal = mat3(inverse(transpose(modelMatrix)))*normal;
+	vsOut.texCoords = texCoords;
+	vsOut.fragPos = vec3(modelMatrix* homogenousVertexPosition);
+	vsOut.fragPosLightSpace = lilghtSpaceMatrix* vec4(vsOut.fragPos, 1.0);
 	gl_Position = projectionMatrix * viewMatrix * modelMatrix * homogenousVertexPosition;
 }

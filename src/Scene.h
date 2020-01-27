@@ -1,11 +1,11 @@
-#pragma once
+ #pragma once
 
 #ifndef SCENE_H
 #define SCENE_H
 
 #include <unordered_map>
-#include <Entity.h>
-#include <Camera.h>
+#include "Entity.h"
+#include "Camera.h""
 #include "Light.h"
 
 class Scene {
@@ -14,23 +14,24 @@ protected:
 	std::vector<PointLight*> pointLights;
 	DirectionalLight* directionalLight;
 	Camera* mainCamera;
+
 public:
+
+	//TODO: remove this implmenet uniform buffers to fix uniform assignement;
+	glm::mat4 directionalLightSpaceMatrix;
 
 	template <class T >
 	T* createEntity(string name, Mesh* mesh = nullptr, Material* overrideMat = nullptr);
 	PointLight* createPointLight(glm::vec3 position, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
 	DirectionalLight* createDirectionalLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
-
-	std::vector<Entity*>& getEntities();
-
-	Camera* getMainCamera();
 	void setMainCamera(Camera* camera);
 
-	virtual void update();
+	std::vector<Entity*>& getEntities();
+	std::vector<PointLight*>& getPointLIghts();
+	DirectionalLight* getDirectionalLight();
+	Camera* getMainCamera();
 
-	// temporary function to be moved to renderer class;
-	void setGlobalUniforms(Shader* shader);
-	void RenderEntities();
+	virtual void update();
 };
 
 template<class T>
@@ -51,4 +52,3 @@ inline T * Scene::createEntity(string name, Mesh* mesh, Material* overrideMat)
 }
 
 #endif
-
