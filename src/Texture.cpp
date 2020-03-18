@@ -39,5 +39,7 @@ void Texture::setWrapping(GLenum s, GLenum t) {
 	glBindTexture(target, textureId);
 	glTexParameteri(target, GL_TEXTURE_WRAP_S, s);
 	glTexParameteri(target, GL_TEXTURE_WRAP_T, t);
+	float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 	glBindTexture(target, 0);
 }

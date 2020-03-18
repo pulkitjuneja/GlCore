@@ -1,16 +1,17 @@
 #include "Camera.h"
 
-Camera::Camera(glm::vec3 position, glm::vec3 front, float fov, float aspect, float near, float far): front(front),
+Camera::Camera(glm::vec3 position, glm::vec3 eulerAngles, float fov, float aspect, float near, float far): front(front),
 	fov(fov),
 	nearPlane(near),
 	farPlane(far),
 	aspect(aspect){
 
 	this->transform.setPosition(position);
+	this->transform.setRotation(eulerAngles);
+	getFrontFromRotation();
 	this->up = glm::vec3(0, 1, 0);
 	this->right = glm::normalize(glm::cross(front, up));
 	this->cameraUP = glm::normalize(glm::cross(right, front));
-	setintialRotation();
 }
 
 void Camera::getFrontFromRotation()
@@ -66,12 +67,4 @@ glm::vec3 * Camera::getFrustumCorners()
 	corners[7] = fc - (up * farHeight) + (right * farWidth); // far-bottom-right
 
 	return corners;
-}
-
-void Camera::setintialRotation()
-{
-	float yaw = std::atan(front.y/front.x) * (180/3.1412);
-	float xz = sqrt(pow(front.x, 2) + pow(front.z, 2));
-	float pitch = std::atan(front.y/xz)* (180 / 3.1412);
-	this->transform.setRotation(glm::vec3(0.0f, 90.0f, 0));
 }

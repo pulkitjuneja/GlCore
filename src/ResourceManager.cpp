@@ -260,8 +260,7 @@ Shader *ResourceManager::getShader(const string& shaderName)
 	}
 }
 
-std::vector<Texture *> ResourceManager::loadMaterialTextures(aiMaterial *aiMaterial,
-																														 aiTextureType aiTextureType, string directory)
+std::vector<Texture *> ResourceManager::loadMaterialTextures(aiMaterial *aiMaterial, aiTextureType aiTextureType, string directory)
 {
 	vector<Texture *> textures;
 

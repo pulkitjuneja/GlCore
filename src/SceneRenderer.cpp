@@ -33,14 +33,14 @@ void SceneRenderer::setGlobalUniforms(Shader* shader)
 
 	// Uniforms for shadow mapping
 	shader->setMat4("lightSpaceMatrix", &scene->directionalLightSpaceMatrix[0][0]);
-	shader->setInt("shadowMap", 4);
+	shader->setInt("shadowMap", 10);
 }
 
 void SceneRenderer::bindGlobalMaps()
 {
 	Texture* depthMapTexture = ResourceManager::getInstance()->getTexture(SHADOW_MAP);
 	if (depthMapTexture) {
-		depthMapTexture->bind(4);
+		depthMapTexture->bind(GL_TEXTURE0 + 10);
 	}
 }
 
@@ -49,6 +49,9 @@ void SceneRenderer::renderScene(Scene * scene, Material* overrideMaterial)
 	this->scene = scene;
 	std::vector<Entity*> entities = scene->getEntities();;
 	std::vector<Entity*>::iterator it = entities.begin();
+
+	bindGlobalMaps();
+
 	for (; it != entities.end(); it++) {
 		Entity* ent = (*it);
 

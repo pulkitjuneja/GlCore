@@ -26,6 +26,10 @@ void Mesh::setupMesh() {
 
 Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<SubMesh> & subMeshes)
 {
+	// TODO: make this parameterized. Handle how vertex attributes will be space when somehting is not present.
+	hasNormals = true;
+	hasTexCoords = true;
+
 	this->vertices = vertices;
 	this->indices = indices;
 	this->subMeshes = subMeshes;

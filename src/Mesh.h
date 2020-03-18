@@ -14,6 +14,16 @@ struct SubMesh {
 	uint32_t baseIndex;
 	uint32_t indexCount;
 	uint32_t baseVertex;
+
+public:
+	SubMesh() {}
+
+	SubMesh(Material* material, uint32_t baseIndex, uint32_t indexCount, uint32_t baseVertex) {
+		this->material = material;
+		this->baseIndex = baseIndex;
+		this->indexCount = indexCount;
+		this->baseVertex = baseVertex;
+	}
 };
 
 class Mesh {

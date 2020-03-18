@@ -1,6 +1,6 @@
 #include "Renderer.h"
 
-void Renderer::setScene(Scene* scene)
+void Renderer::setScene(Scene *scene)
 {
 	this->scene = scene;
 }

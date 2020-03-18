@@ -14,6 +14,12 @@ void CameraController::update()
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
 		camera->transform.translate(-camera->front * CAMERA_SPEED);
 	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::C)) {
+		auto position = this->camera->transform.getPosition();
+		auto rotation = this->camera->transform.getEulerAngles();
+		std::cout << position.x << "  " << position.y << "  " << position.z << "\n";
+		std::cout << rotation.x << "  " << rotation.y << "  " << rotation.z << "\n";
+	}
 }
 
 void CameraController::handleRotation()

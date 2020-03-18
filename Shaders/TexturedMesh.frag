@@ -73,8 +73,19 @@ float ShadowCalculation(vec4 fragPosLightSpace)
 	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
 	projCoords = projCoords * 0.5 + 0.5; 
 	float closestDepth = texture(shadowMap, projCoords.xy).r;
-	float currentDepth = projCoords.z;
-	return  currentDepth > closestDepth  ? 1.0 : 0.0;
+	float bias = 0.05;
+	vec2 inc = 1.0 / textureSize(shadowMap, 0);
+	float shadowFactor = 0.0;
+	for(int row = -1; row <= 1; ++row)
+	{
+		for(int col = -1; col <= 1; ++col)
+			{
+				float textDepth = texture(shadowMap, projCoords.xy + vec2(row, col) * inc).r; 
+				shadowFactor += projCoords.z - bias > textDepth ? 1.0 : 0.0;        
+			}    
+	}
+	shadowFactor /= 9.0;
+	 return shadowFactor;
 }
 
 vec3 calculateDirectionalLight (vec3 normal, vec3 viewDir) {
