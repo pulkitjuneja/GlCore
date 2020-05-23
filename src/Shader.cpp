@@ -72,6 +72,14 @@ void Shader::setMat4(const string &name, GLfloat *matrix) {
 	}
 }
 
+void Shader::setUniformBlockBinding(const string & name, int index)
+{
+	unsigned int uniformBlockIndex = glGetUniformBlockIndex(shaderProgram, name.c_str());
+	if (uniformBlockIndex != GL_INVALID_INDEX) {
+		glUniformBlockBinding(shaderProgram, uniformBlockIndex, index);
+	}
+}
+
 GLuint Shader::getUniformLocation(const string & name) const
 {
 	if (uniformLocations.find(name) == uniformLocations.end())

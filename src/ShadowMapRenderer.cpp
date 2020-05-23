@@ -19,16 +19,13 @@ ShadowMapRenderer::ShadowMapRenderer()
 
 void ShadowMapRenderer::render(Scene * scene)
 {
-	depthMapFbo->bind();
-	glClear(GL_DEPTH_BUFFER_BIT);
-	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-	updateLightSpaceMatrix(scene);
 	sceneRenderer.renderScene(scene, depthMapMaterial);
 	depthMapFbo->unBind();
 }
 
 void ShadowMapRenderer::updateLightSpaceMatrix(Scene* scene)
 {
+	depthMapFbo->bind();
 	Camera* camera = scene->getMainCamera();
 	glm::vec3 directionalLightDirection = scene->getDirectionalLight()->direction;
 
@@ -39,7 +36,7 @@ void ShadowMapRenderer::updateLightSpaceMatrix(Scene* scene)
 		frustumCenter += frustumCorners[i];
 
 	frustumCenter /= 8.0f;
-	float frustumExtents = 50;
+	float frustumExtents = 100;
 	glm::vec3 temporaryLightPos = frustumCenter - (directionalLightDirection * frustumExtents); //
 	glm::mat4 lightView = glm::lookAt(temporaryLightPos, frustumCenter, camera->cameraUP);
 
@@ -58,6 +55,6 @@ void ShadowMapRenderer::updateLightSpaceMatrix(Scene* scene)
 		maxX = std::max(maxX, transformedCorner.x);
 	}
 
-	glm::mat4 ortho = glm::ortho(minX, maxX, minY, maxY, 2.0f, frustumExtents+200);
+	glm::mat4 ortho = glm::ortho(minX, maxX, minY, maxY, 2.0f, frustumExtents+500);
 	scene->directionalLightSpaceMatrix = ortho * lightView;
 }

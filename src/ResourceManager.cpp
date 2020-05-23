@@ -16,7 +16,9 @@ void ResourceManager::readFromFile(const std::string &fileName, char *&shaderCon
 	strcpy(shaderContent, &buffer.str()[0]);
 }
 
-ResourceManager::ResourceManager() {}
+ResourceManager::ResourceManager() {
+
+}
 
 ResourceManager *ResourceManager::getInstance()
 {
@@ -81,8 +83,10 @@ void ResourceManager::loadShader(const std::string &vertexShaderPath, const std:
 
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
+	Shader* newShader = new Shader(shaderProgram, shaderName, uniformCount);
+	newShader->setUniformBlockBinding("perFrameUniforms", 0);
 
-	loadedShaders.insert(make_pair(shaderName, new Shader(shaderProgram, shaderName, uniformCount)));
+	loadedShaders.insert(make_pair(shaderName, newShader));
 }
 
 Texture *ResourceManager::loadTexture(const string &texturePath, const string &directory, TextureType type)
@@ -91,9 +95,9 @@ Texture *ResourceManager::loadTexture(const string &texturePath, const string &d
 	string filename = string(texturePath);
 	filename = directory + '/' + filename;
 
-	if (textures.find(filename) != textures.end())
+	if (textures.find(texturePath) != textures.end())
 	{
-		return textures.find(filename)->second;
+		return textures.find(texturePath)->second;
 	}
 
 	Texture* tex = new Texture(type);
@@ -120,7 +124,7 @@ Texture *ResourceManager::loadTexture(const string &texturePath, const string &d
 	}
 	stbi_image_free(data);
 	textures.emplace(make_pair(texturePath, tex));
-
+	std::cout << "Texture Loaded: " << texturePath<< std::endl;
 	return textures.find(texturePath)->second;
 }
 
@@ -231,6 +235,7 @@ Mesh *ResourceManager::loadMesh(string path, int loaderFlags)
 	newMesh->hasNormals = hasNormals;
 	newMesh->hasTexCoords = hasTexCoords;
 	loadedMeshes.insert(make_pair(path, newMesh));
+	std::cout << "Mesh Loaded: " << path << std::endl;
 	return loadedMeshes.find(path)->second;
 }
 

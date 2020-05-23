@@ -13,6 +13,7 @@ link_directories(
 
 file(GLOB glcore_src
     "src/*.h"
+	"src/*.hpp"
     "src/*.cpp"
 	"src/utils/*.h"
 	"src/utils/*.cpp"

@@ -20,6 +20,7 @@ public:
     void setFloat(const string &name, float value) const;
     void setFloat3(const string &name, float value1, float value2, float value3);
     void setMat4(const string &name, GLfloat* matrix);
+	void setUniformBlockBinding(const string& name, int index);
 	GLuint getUniformLocation(const string& name) const;
 };
 

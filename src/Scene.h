@@ -5,8 +5,8 @@
 
 #include <unordered_map>
 #include "Entity.h"
-#include "Camera.h""
-#include "Light.h"
+#include "Camera.h"
+#include "Uniforms.h"
 
 class Scene {
 protected:
@@ -22,8 +22,8 @@ public:
 
 	template <class T >
 	T* createEntity(string name, Mesh* mesh = nullptr, Material* overrideMat = nullptr);
-	PointLight* createPointLight(glm::vec3 position, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
-	DirectionalLight* createDirectionalLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
+	PointLight* createPointLight(glm::vec4 position, glm::vec4 ambient, glm::vec4 diffuse, glm::vec4 specular);
+	DirectionalLight* createDirectionalLight(glm::vec4 direction, glm::vec4 ambient, glm::vec4 diffuse, glm::vec4 specular);
 	void setMainCamera(Camera* camera);
 
 	std::vector<Entity*>& getEntities();

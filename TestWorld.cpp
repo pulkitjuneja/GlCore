@@ -1,4 +1,4 @@
-#pragma once
+#pragma once 
 
 #ifndef TEST_WORLD
 #define TEST_WORLD
@@ -10,20 +10,19 @@
 #include "Entity.h"
 #include "Scene.h"
 #include "utils/CameraController.h"
+#include <windows.h>
+#include "Uniforms.h"
 
-class TestWorld : public Engine
-{
+class TestWorld : public Engine {
 
-	Scene *scene;
-	CameraController *cameraController;
-	Entity *crysisEntity;
-	Entity *sponzaEntity;
+	Scene* scene;
+	CameraController* cameraController;
+	Entity* crysisEntity;
+	Entity * sponzaEntity;
 	//Entity* quadEntity;
 public:
-	TestWorld(){};
-	bool init()
-	{
-
+	TestWorld() {};
+	bool init() {
 		// Change this to load a different model
 		string sponzaMeshLocation = "Assets/Meshes/Sponza/sponza.obj";
 		string crysisMeshLocation = "Assets/Meshes/crysisM/nanosuit.obj";
@@ -60,19 +59,18 @@ public:
 		/*quadEntity->transfrom.setScale(glm::vec3(100, 100, 100));
 		quadEntity->transfrom.rotate(glm::vec3(90, 0, 0));*/
 
-		scene->setMainCamera(new Camera(glm::vec3(-4.31142f, 55.923f, 191.538f), glm::vec3(-16.8f, -89.1506f, 0), 90.0f, float(SCREEN_WIDTH) / float(SCREEN_HEIGHT), 8.0f, 1000.0f));
-		//scene->createPointLight(glm::vec3(-10, 10, 5), glm::vec3(0.01, 0.01, 0.01), glm::vec3(1, 1, 1), glm::vec3(1, 1, 1));
-		//scene->createPointLight(glm::vec3(-10, 150, 80), glm::vec3(0.01, 0.01, 0.01), glm::vec3(1, 1, 1), glm::vec3(1, 1, 1));
-		//scene->createPointLight(glm::vec3(-10, 150, -80), glm::vec3(0.01, 0.01, 0.01), glm::vec3(0, 1, 0), glm::vec3(0, 1, 0));
-		//scene->createPointLight(glm::vec3(300, 10, 5), glm::vec3(0.01, 0.01, 0.01), glm::vec3(1, 0, 0), glm::vec3(1, 0, 0));
+		scene->setMainCamera(new Camera(glm::vec3(-4.31142f, 55.923f, 191.538f), glm::vec3(-16.8f, -89.1506f, 0), 90.0f, float(SCREEN_WIDTH)/float(SCREEN_HEIGHT), 8.0f, 1000.0f));
+		scene->createPointLight(glm::vec4(-10, 10, 5, 1.0), glm::vec4(0.5f, 0.01, 0.01, 1.0), glm::vec4(1, 1, 1, 1.0), glm::vec4(0.1, 0.1, 0.1, 1.0));
+		scene->createPointLight(glm::vec4(-10, 150, 80, 1.0), glm::vec4(0.01, 0.5f, 0.01, 1.0), glm::vec4(1, 1, 1, 1.0), glm::vec4(0.1, 0.1, 0.1, 1.0));
+		scene->createPointLight(glm::vec4(-10, 150, -80, 1.0), glm::vec4(0.01, 0.01, 0.5, 1.0), glm::vec4(0, 1, 0, 1.0), glm::vec4(0.1, 0.1, 0.1, 1.0));
+		scene->createPointLight(glm::vec4(300, 10, 5, 1.0), glm::vec4(0.01, 0.01, 0.5, 1.0), glm::vec4(1, 0, 0, 1.0), glm::vec4(0.1, 0.1, 0.1, 1.0));
 		//scene->createPointLight(glm::vec3(-300, 10, 5), glm::vec3(0.01, 0.01, 0.01), glm::vec3(0, 0, 1), glm::vec3(05, 0, 1));
-		scene->createDirectionalLight(glm::vec3(0, -1, 0), glm::vec3(0.2, 0.2, 0.2), glm::vec3(0.5, 0.5, 0.5), glm::vec3(0.5, 0.5, 0.5));
+		scene->createDirectionalLight(glm::vec4(0, -1, 0, 1.0), glm::vec4(0.2, 0.2, 0.2, 1.0), glm::vec4(0.5, 0.5, 0.5, 1.0), glm::vec4(0.1, 0.1, 0.1, 1.0));
 		cameraController = new CameraController(scene->getMainCamera());
 		return true;
 	}
 
-	void update()
-	{
+	void update() {
 		crysisEntity->transfrom.rotate(glm::vec3(0, 0.005, 0));
 		//quadEntity->transfrom.rotate(glm::vec3(0.005f, 0, 0));
 		cameraController->update();

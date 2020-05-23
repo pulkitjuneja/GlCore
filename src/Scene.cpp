@@ -2,7 +2,7 @@
 
 #include "Scene.h"
 
-PointLight * Scene::createPointLight(glm::vec3 position, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular)
+PointLight * Scene::createPointLight(glm::vec4 position, glm::vec4 ambient, glm::vec4 diffuse, glm::vec4 specular)
 {
 	PointLight* light = new PointLight();
 	light->position = position;
@@ -14,7 +14,7 @@ PointLight * Scene::createPointLight(glm::vec3 position, glm::vec3 ambient, glm:
 	return light;
 }
 
-DirectionalLight * Scene::createDirectionalLight(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular)
+DirectionalLight * Scene::createDirectionalLight(glm::vec4 direction, glm::vec4 ambient, glm::vec4 diffuse, glm::vec4 specular)
 {
 	DirectionalLight* light = new DirectionalLight();
 

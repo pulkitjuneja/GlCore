@@ -20,6 +20,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include "UniformBuffer.h"
 
 
 struct EnumClassHash
@@ -40,9 +41,10 @@ private:
 	std::unordered_map<string, Mesh*> loadedMeshes;
 
 	std::unordered_map <aiTextureType, TextureType, EnumClassHash> textureTypeMap = {
-	{aiTextureType_DIFFUSE, TextureType::DIFFUSE},
-	{aiTextureType_SPECULAR, TextureType::SPECULAR}
+		{aiTextureType_DIFFUSE, TextureType::DIFFUSE},
+		{aiTextureType_SPECULAR, TextureType::SPECULAR}
 	};
+
 
     ResourceManager ();
     static ResourceManager* instance;
@@ -64,6 +66,10 @@ public:
 	//Getters
 	Shader* getShader(const string &shaderName);
 	Texture* getTexture(const string &textureName);
+
+	//UniformBUffers
+	UniformBuffer* perFrameUbo;
+
 };
 
 
