@@ -14,6 +14,7 @@ protected:
 	std::vector<PointLight*> pointLights;
 	DirectionalLight* directionalLight;
 	Camera* mainCamera;
+	//Mesh* cameraFrustumMesh;
 
 public:
 

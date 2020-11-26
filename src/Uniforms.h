@@ -35,4 +35,16 @@ struct PerFrameUniforms {
 	int pointLightCount;
 };
 
+struct FarBound {
+	ALIGNED(16) float farBound;
+};
+
+struct CSMUniforms {
+	//ALIGNED(16) glm::mat4 cropMatrices[MAX_FRUSTUM_SPLITS];
+    int splitCount;
+	ALIGNED(16) glm::mat4 textureMatrices[CSM_MAX_SPLIT_COUNT];
+	ALIGNED(16) FarBound farBounds[CSM_MAX_SPLIT_COUNT];
+
+};
+
 #endif

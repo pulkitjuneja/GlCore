@@ -4,6 +4,8 @@
 
 #include "Globals.h"
 #include <unordered_map>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 using namespace std;
 
@@ -19,7 +21,7 @@ public:
     void setInt(const string &name, int value) const;
     void setFloat(const string &name, float value) const;
     void setFloat3(const string &name, float value1, float value2, float value3);
-    void setMat4(const string &name, GLfloat* matrix);
+    void setMat4(const string &name, glm::mat4 &matrix);
 	void setUniformBlockBinding(const string& name, int index);
 	GLuint getUniformLocation(const string& name) const;
 };

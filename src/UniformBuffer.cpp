@@ -28,5 +28,5 @@ void UniformBuffer::unmapFromMemroy()
 {
 	glBindBuffer(GL_UNIFORM_BUFFER, id);
 	glUnmapBuffer(GL_UNIFORM_BUFFER);
-	glBindBuffer(id, 0);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }

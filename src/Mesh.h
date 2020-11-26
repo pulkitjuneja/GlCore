@@ -30,7 +30,9 @@ class Mesh {
 public:
 	Mesh(std::vector<Vertex> &vertices,
 		std::vector<unsigned int> &indices,
-		std::vector<SubMesh> &subMeshes
+		std::vector<SubMesh> &subMeshes,
+		bool hasNormals,
+		bool hasTextCoords
 	);
 	
 	GLuint VBO, VAO, EBO;
@@ -41,6 +43,7 @@ public:
 	bool hasTexCoords;
 
     void setupMesh();
+	void updateBuffers(std::vector<Vertex>& vertices, glm::vec3* indices);
 };
 
 

@@ -65,10 +65,10 @@ void Shader::setFloat3(const string &name, float value1, float value2, float val
 	}
 }
 
-void Shader::setMat4(const string &name, GLfloat *matrix) {
+void Shader::setMat4(const string &name, glm::mat4 &matrix) {
 	GLuint loc = getUniformLocation(name);
 	if (loc != -1) {
-		glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, matrix);
+		glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(matrix));
 	}
 }
 

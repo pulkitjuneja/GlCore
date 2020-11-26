@@ -37,6 +37,7 @@ out VS_OUT {
     vec3 fragPos;
     vec3 vertNormal;
     vec2 texCoords;
+	vec4 ndcFragPos;
     vec4 fragPosLightSpace;
 } vsOut;
 
@@ -45,6 +46,7 @@ void main() {
 	vsOut.vertNormal = mat3(inverse(transpose(modelMatrix)))*normal;
 	vsOut.texCoords = texCoords;
 	vsOut.fragPos = vec3(modelMatrix* homogenousVertexPosition);
-	vsOut.fragPosLightSpace = lightSpaceMatrix* vec4(vsOut.fragPos, 1.0);
-	gl_Position = projectionMatrix * viewMatrix * modelMatrix * homogenousVertexPosition;
+	vsOut.ndcFragPos = projectionMatrix * viewMatrix * modelMatrix * homogenousVertexPosition;
+	// vsOut.fragPosLightSpace = lightSpaceMatrix* vec4(vsOut.fragPos, 1.0);
+	gl_Position = vsOut.ndcFragPos;
 }

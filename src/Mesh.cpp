@@ -24,14 +24,25 @@ void Mesh::setupMesh() {
 	glBindVertexArray(0);
 }
 
-Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<SubMesh> & subMeshes)
+Mesh::Mesh(std::vector<Vertex>& vertices, 
+	std::vector<unsigned int>& indices, 
+	std::vector<SubMesh> & subMeshes, 
+	bool hasNormals,
+	bool hasTextCoords)
 {
 	// TODO: make this parameterized. Handle how vertex attributes will be space when somehting is not present.
-	hasNormals = true;
-	hasTexCoords = true;
+	this->hasNormals = hasNormals;
+	this->hasTexCoords = hasTexCoords;
 
 	this->vertices = vertices;
 	this->indices = indices;
 	this->subMeshes = subMeshes;
 	setupMesh();
 }
+
+void Mesh::updateBuffers(std::vector<Vertex>& vertices, glm::vec3* indices) {
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size(), &vertices[0]);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+

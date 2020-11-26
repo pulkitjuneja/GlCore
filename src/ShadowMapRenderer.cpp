@@ -3,12 +3,15 @@
 ShadowMapRenderer::ShadowMapRenderer()
 {
 	depthMap = ResourceManager::getInstance()->generateTexture(SHADOW_MAP,
-		TextureType::DEPTH, NULL, SHADOW_WIDTH, SHADOW_HEIGHT, GL_DEPTH_COMPONENT, GL_FLOAT, GL_NEAREST, GL_NEAREST, 
-		GL_CLAMP_TO_BORDER, GL_CLAMP_TO_BORDER);
+		TextureType::DEPTH, SHADOW_WIDTH, SHADOW_HEIGHT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT, 1);
+	depthMap->bind();
+	depthMap->setMinMagFilter(GL_NEAREST, GL_NEAREST);
+	depthMap->setWrapping(GL_CLAMP_TO_BORDER, GL_CLAMP_TO_BORDER);
+	depthMap->Unbind();
 	depthMapMaterial = new Material();
 	depthMapMaterial->setShader(ResourceManager::getInstance()->getShader("depthMap"));
 	depthMapFbo = new FrameBuffer();
-	depthMapFbo->attachDepthTarget(depthMap, 0);
+	depthMapFbo->attachDepthTarget(depthMap,0,0);
 
 	GLenum Status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
@@ -19,13 +22,13 @@ ShadowMapRenderer::ShadowMapRenderer()
 
 void ShadowMapRenderer::render(Scene * scene)
 {
+	depthMapFbo->bind();
 	sceneRenderer.renderScene(scene, depthMapMaterial);
 	depthMapFbo->unBind();
 }
 
 void ShadowMapRenderer::updateLightSpaceMatrix(Scene* scene)
 {
-	depthMapFbo->bind();
 	Camera* camera = scene->getMainCamera();
 	glm::vec3 directionalLightDirection = scene->getDirectionalLight()->direction;
 
@@ -55,6 +58,6 @@ void ShadowMapRenderer::updateLightSpaceMatrix(Scene* scene)
 		maxX = std::max(maxX, transformedCorner.x);
 	}
 
-	glm::mat4 ortho = glm::ortho(minX, maxX, minY, maxY, 2.0f, frustumExtents+500);
+	glm::mat4 ortho = glm::ortho(minX, maxX, minY, maxY, 2.0f, frustumExtents + 500);
 	scene->directionalLightSpaceMatrix = ortho * lightView;
 }

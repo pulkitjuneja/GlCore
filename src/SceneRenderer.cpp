@@ -13,27 +13,14 @@ void SceneRenderer::setGlobalUniforms(PerFrameUniforms &perFrameUniforms, Scene*
 	auto pointLights = scene->getPointLIghts();
 	for (int i = 0; i < pointLights.size(); i++) {
 		perFrameUniforms.pointLights[i] = *pointLights[i];
-		//string prefixString = "pointLights[" + std::to_string(i) + "].";
-		//shader->setFloat3(prefixString + "position", pointLights[i]->position.x, pointLights[i]->position.y, pointLights[i]->position.z);
-		//shader->setFloat3(prefixString + "diffuse", pointLights[i]->diffuse.r, pointLights[i]->diffuse.g, pointLights[i]->diffuse.b);
-		//shader->setFloat3(prefixString + "specular", pointLights[i]->specular.r, pointLights[i]->specular.g, pointLights[i]->specular.b);
-		//shader->setFloat3(prefixString + "ambient", pointLights[i]->ambient.r, pointLights[i]->ambient.g, pointLights[i]->ambient.b);
-		//shader->setFloat(prefixString + "linearAttenuation", 0.0025);
-		//shader->setFloat(prefixString + "quadraticAttenuation", 0.00007);
 	}
 	perFrameUniforms.pointLightCount = pointLights.size();
 	perFrameUniforms.lightSpaceMatrix = scene->directionalLightSpaceMatrix;
-	//shader->setInt("pointLightCount", pointLights.size());
-	//shader->setFloat3("cameraPosition", mainCamera->transform.getPosition().x, mainCamera->transform.getPosition().y, mainCamera->transform.getPosition().z);
-
-	//// Uniforms for shadow mapping
-	//shader->setMat4("lightSpaceMatrix", &scene->directionalLightSpaceMatrix[0][0]);
-	//shader->setInt("shadowMap", 10);
 }
 
 void SceneRenderer::bindGlobalMaps()
 {
-	Texture* depthMapTexture = ResourceManager::getInstance()->getTexture(SHADOW_MAP);
+	Texture* depthMapTexture = ResourceManager::getInstance()->getTexture(CSM_SHADOW_MAPS);
 	if (depthMapTexture) {
 		depthMapTexture->bind(GL_TEXTURE0 + 10);
 	}
@@ -59,7 +46,6 @@ void SceneRenderer::renderScene(Scene * scene, Material* overrideMaterial)
 		Shader* currentShader = nullptr;
 		if(overrideMaterial) {
 			currentShader = overrideMaterial->getShader();
-			currentShader->use();
 		}
 
 		for (int i = 0; i < currentMesh->subMeshes.size(); i++) {
@@ -67,7 +53,7 @@ void SceneRenderer::renderScene(Scene * scene, Material* overrideMaterial)
 			SubMesh currentSubMesh = currentMesh->subMeshes[i];
 			Shader* submeshShader = currentSubMesh.material->getShader();
 
-			if (!currentShader) {
+			if (!currentShader && !overrideMaterial) {
 				currentShader = submeshShader;
 				currentShader->use();
 			}
@@ -77,7 +63,7 @@ void SceneRenderer::renderScene(Scene * scene, Material* overrideMaterial)
 				currentShader->use();
 			}
 
-			currentShader->setMat4("modelMatrix", &ent->getTransform()->getTransformationMatrix()[0][0]);
+			currentShader->setMat4("modelMatrix", ent->getTransform()->getTransformationMatrix());
 
 			unsigned int diffuseNr = 0;
 			unsigned int specularNr = 0;
@@ -100,6 +86,7 @@ void SceneRenderer::renderScene(Scene * scene, Material* overrideMaterial)
 
 			currentShader->setInt("material.specularCount", specularNr);
 			currentShader->setInt("material.diffuseCount", diffuseNr);
+			currentShader->setInt("shadowMap", 10);
 			glDrawElementsBaseVertex(GL_TRIANGLES, currentSubMesh.indexCount, GL_UNSIGNED_INT, (void*)(sizeof(unsigned int) * currentSubMesh.baseIndex), currentSubMesh.baseVertex);
 
 		}
