@@ -4,6 +4,7 @@
 sf::Time Engine::deltaTime;
 sf::Time Engine::timeSinceStart;
 
+
 void Engine::loadDefaultShaders()
 {
 	ResourceManager::getInstance()->loadShader("Shaders/basic.vert", "Shaders/basic.frag", "defaultShader");
@@ -26,6 +27,10 @@ void Engine::start() {
     }
 
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+	//glEnable(GL_DEBUG_OUTPUT);
+	//glDebugMessageCallback(MessageCallback, 0);
 
     sf::Clock clock;
     while (isEngineRunning) {
@@ -60,10 +65,11 @@ bool Engine::setupSFML() {
     settings.stencilBits = 8;
     settings.majorVersion = 3;
     settings.minorVersion = 3;
+
     settings.attributeFlags = sf::ContextSettings::Core;
 
     window = new sf::Window( sf::VideoMode( SCREEN_WIDTH, SCREEN_HEIGHT, 32 ), "OpenGL SFML", sf::Style::Titlebar | sf::Style::Close, settings );
-
+	window->setVerticalSyncEnabled(false);
     glewExperimental = GL_TRUE;
 
     if ( GLEW_OK != glewInit( ) )

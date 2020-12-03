@@ -8,9 +8,8 @@
 #include "ResourceManager.hpp"
 
 class SceneRenderer {
-	Scene* scene;
 public:
-	void setGlobalUniforms(Shader* shader);
+	void setGlobalUniforms(PerFrameUniforms &perFrameUniforms, Scene* scene);
 	void bindGlobalMaps();
 	void renderScene(Scene* scene, Material* overrideMaterial = nullptr);
 };

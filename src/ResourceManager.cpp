@@ -16,7 +16,9 @@ void ResourceManager::readFromFile(const std::string &fileName, char *&shaderCon
 	strcpy(shaderContent, &buffer.str()[0]);
 }
 
-ResourceManager::ResourceManager() {}
+ResourceManager::ResourceManager() {
+
+}
 
 ResourceManager *ResourceManager::getInstance()
 {
@@ -81,8 +83,11 @@ void ResourceManager::loadShader(const std::string &vertexShaderPath, const std:
 
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
+	Shader* newShader = new Shader(shaderProgram, shaderName, uniformCount);
+	newShader->setUniformBlockBinding("perFrameUniforms", 0);
+	newShader->setUniformBlockBinding("csmUniforms", 1);
 
-	loadedShaders.insert(make_pair(shaderName, new Shader(shaderProgram, shaderName, uniformCount)));
+	loadedShaders.insert(make_pair(shaderName, newShader));
 }
 
 Texture *ResourceManager::loadTexture(const string &texturePath, const string &directory, TextureType type)
@@ -91,15 +96,15 @@ Texture *ResourceManager::loadTexture(const string &texturePath, const string &d
 	string filename = string(texturePath);
 	filename = directory + '/' + filename;
 
-	if (textures.find(filename) != textures.end())
+	if (textures.find(texturePath) != textures.end())
 	{
-		return textures.find(filename)->second;
+		return textures.find(texturePath)->second;
 	}
-
-	Texture* tex = new Texture(type);
 
 	int width, height, nrComponents;
 	unsigned char *data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
+
+	Texture* tex;
 
 	if (data)
 	{
@@ -110,9 +115,13 @@ Texture *ResourceManager::loadTexture(const string &texturePath, const string &d
 			format = GL_RGB;
 		else if (nrComponents == 4)
 			format = GL_RGBA;
-		tex->setData(data, width, height, format, GL_UNSIGNED_BYTE);
+		tex = new Texture(type, 1, width, height, format, GL_UNSIGNED_BYTE, format);
+		tex->bind();
+		tex->setData(data, 0);
+		tex->generateMipMaps();
 		tex->setWrapping(GL_REPEAT, GL_REPEAT);
 		tex->setMinMagFilter(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+		tex->Unbind();
 	}
 	else
 	{
@@ -120,20 +129,17 @@ Texture *ResourceManager::loadTexture(const string &texturePath, const string &d
 	}
 	stbi_image_free(data);
 	textures.emplace(make_pair(texturePath, tex));
-
+	std::cout << "Texture Loaded: " << texturePath << std::endl;
 	return textures.find(texturePath)->second;
 }
 
-Texture* ResourceManager::generateTexture(const string& identifier, TextureType textureType, unsigned char* data, const uint32_t& w, 
-	const uint32_t& h, GLenum format, GLenum dataType, GLenum minFilter, GLenum magFilter, GLenum s, GLenum t) {
+Texture* ResourceManager::generateTexture(const string& identifier, TextureType textureType, const uint32_t& w,
+	const uint32_t& h, GLenum format, GLenum internalFormat, GLenum dataType, int arraySize) {
 	if (textures.find(identifier) != textures.end())
 	{
 		return textures.find(identifier)->second;
 	}
-	Texture* tex = new Texture(textureType);
-	tex->setData(data, w, h, format, dataType);
-	tex->setMinMagFilter(minFilter, magFilter);
-	tex->setWrapping(s, t);
+	Texture* tex = new Texture(textureType, arraySize, w, h, format, dataType, internalFormat);
 	textures.emplace(make_pair(identifier, tex));
 	return tex;
 }
@@ -210,6 +216,7 @@ Mesh *ResourceManager::loadMesh(string path, int loaderFlags)
 		{
 			material->setShader(getShader("texturedMeshShader"));
 			aiMaterial *aiMaterial = scene->mMaterials[currentMesh->mMaterialIndex];
+			//aiMaterial->m
 			//material.
 
 			std::vector<Texture *> diffuseMaps = loadMaterialTextures(aiMaterial, aiTextureType_DIFFUSE, directory);
@@ -227,10 +234,11 @@ Mesh *ResourceManager::loadMesh(string path, int loaderFlags)
 		submeshes[i].material = material;
 	}
 
-	Mesh *newMesh = new Mesh(vertices, indices, submeshes);
+	Mesh *newMesh = new Mesh(vertices, indices, submeshes, hasNormals, hasTexCoords);
 	newMesh->hasNormals = hasNormals;
 	newMesh->hasTexCoords = hasTexCoords;
 	loadedMeshes.insert(make_pair(path, newMesh));
+	std::cout << "Mesh Loaded: " << path << std::endl;
 	return loadedMeshes.find(path)->second;
 }
 
@@ -260,8 +268,7 @@ Shader *ResourceManager::getShader(const string& shaderName)
 	}
 }
 
-std::vector<Texture *> ResourceManager::loadMaterialTextures(aiMaterial *aiMaterial,
-																														 aiTextureType aiTextureType, string directory)
+std::vector<Texture *> ResourceManager::loadMaterialTextures(aiMaterial *aiMaterial, aiTextureType aiTextureType, string directory)
 {
 	vector<Texture *> textures;
 

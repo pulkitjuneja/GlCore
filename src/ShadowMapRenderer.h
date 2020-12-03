@@ -15,8 +15,8 @@ class ShadowMapRenderer {
 	SceneRenderer sceneRenderer;
 	Material* depthMapMaterial;
 public:
-	int SHADOW_WIDTH = 1920;
-	int SHADOW_HEIGHT = 1080;
+	int SHADOW_WIDTH = 1024;
+	int SHADOW_HEIGHT = 1024;
 	ShadowMapRenderer();
 	void render(Scene* scene);
 	void updateLightSpaceMatrix (Scene* scene);

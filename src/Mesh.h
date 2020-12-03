@@ -14,13 +14,25 @@ struct SubMesh {
 	uint32_t baseIndex;
 	uint32_t indexCount;
 	uint32_t baseVertex;
+
+public:
+	SubMesh() {}
+
+	SubMesh(Material* material, uint32_t baseIndex, uint32_t indexCount, uint32_t baseVertex) {
+		this->material = material;
+		this->baseIndex = baseIndex;
+		this->indexCount = indexCount;
+		this->baseVertex = baseVertex;
+	}
 };
 
 class Mesh {
 public:
 	Mesh(std::vector<Vertex> &vertices,
 		std::vector<unsigned int> &indices,
-		std::vector<SubMesh> &subMeshes
+		std::vector<SubMesh> &subMeshes,
+		bool hasNormals,
+		bool hasTextCoords
 	);
 	
 	GLuint VBO, VAO, EBO;
@@ -31,6 +43,7 @@ public:
 	bool hasTexCoords;
 
     void setupMesh();
+	void updateBuffers(std::vector<Vertex>& vertices, glm::vec3* indices);
 };
 
 

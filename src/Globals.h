@@ -29,4 +29,6 @@
 
 extern std::string dpath;
 
+#define ALIGNED(x) __declspec(align(x))
+
 #endif /* Globals_h */

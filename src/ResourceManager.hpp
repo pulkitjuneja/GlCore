@@ -20,6 +20,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include "UniformBuffer.h"
 
 
 struct EnumClassHash
@@ -40,9 +41,10 @@ private:
 	std::unordered_map<string, Mesh*> loadedMeshes;
 
 	std::unordered_map <aiTextureType, TextureType, EnumClassHash> textureTypeMap = {
-	{aiTextureType_DIFFUSE, TextureType::DIFFUSE},
-	{aiTextureType_SPECULAR, TextureType::SPECULAR}
+		{aiTextureType_DIFFUSE, TextureType::DIFFUSE},
+		{aiTextureType_SPECULAR, TextureType::SPECULAR}
 	};
+
 
     ResourceManager ();
     static ResourceManager* instance;
@@ -56,14 +58,14 @@ public:
 	//Resource Loaders
 	void loadShader(const string &vertexShaderPath, const string &fragmentShaderPath, const string& shaderName);
     Texture* loadTexture (const string& texturePath, const string& directory, TextureType textureType);
-	Texture* generateTexture(const string& identifier, TextureType textureType, unsigned char* data, const uint32_t& w,
-		const uint32_t& h, GLenum format, GLenum dataType, GLenum minFilter = GL_NEAREST, GLenum magFilter = GL_NEAREST, 
-		GLenum s = GL_REPEAT, GLenum t= GL_REPEAT);
+	Texture* generateTexture(const string& identifier, TextureType textureType, const uint32_t& w,
+		const uint32_t& h, GLenum format, GLenum internalFormat, GLenum dataType, int arraySize);
 	Mesh* loadMesh(string path, int loaderFlags = aiProcess_Triangulate | aiProcess_FlipUVs);
 
 	//Getters
 	Shader* getShader(const string &shaderName);
 	Texture* getTexture(const string &textureName);
+
 };
 
 

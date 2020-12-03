@@ -47,7 +47,7 @@ void ParticleManager::render() {
 
     glm::mat4 viewProjectionMatrix = projectionMatrix * viewMatrix;
 
-    shader->setMat4("VP",&viewProjectionMatrix[0][0]);
+    shader->setMat4("VP",viewProjectionMatrix);
 
 	if (particlePositionData.size() > 0) {
 

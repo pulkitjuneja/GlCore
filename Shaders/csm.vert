@@ -6,8 +6,6 @@ layout (location = 2) in vec2 texCoords;
 uniform mat4 lightSpaceMatrix;
 
 uniform mat4 modelMatrix;
-//uniform mat4 viewMatrix;
-//uniform mat4 projectionMatrix;
 
 void main()
 {
