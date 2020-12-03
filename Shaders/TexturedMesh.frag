@@ -173,9 +173,9 @@ void main()
 
 	result += calculateDirectionalLight(normal, viewDir);
 
-//	for(int i = 0; i < pointLightCount; i++) {
-//		result += calculatePointLight(pointLights[i], normal, viewDir);
-//	}
+	for(int i = 0; i < pointLightCount; i++) {
+		result += calculatePointLight(pointLights[i], normal, viewDir);
+	}
 
 	FragColor = vec4(result,1.0);
 		

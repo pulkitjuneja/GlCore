@@ -65,7 +65,7 @@ public:
 		scene->createPointLight(glm::vec4(-10, 150, -80, 1.0), glm::vec4(0.01, 0.01, 0.5, 1.0), glm::vec4(0, 1, 0, 1.0), glm::vec4(0.1, 0.1, 0.1, 1.0));
 		scene->createPointLight(glm::vec4(300, 10, 5, 1.0), glm::vec4(0.01, 0.01, 0.5, 1.0), glm::vec4(1, 0, 0, 1.0), glm::vec4(0.1, 0.1, 0.1, 1.0));
 		//scene->createPointLight(glm::vec3(-300, 10, 5), glm::vec3(0.01, 0.01, 0.01), glm::vec3(0, 0, 1), glm::vec3(05, 0, 1));
-		scene->createDirectionalLight(glm::vec4(0.5f, -1.0f, 0, 1.0), glm::vec4(0.5f, 0.5f, 0.5f, 1.0f), glm::vec4(0.2f, 0.2f, 0.2f, 1.0f), glm::vec4(0.2f, 0.2f, 0.2f, 1.0f));
+		scene->createDirectionalLight(glm::vec4(0.5f, -1.0f, 0, 1.0), glm::vec4(0.2f, 0.2f, 0.2f, 1.0f), glm::vec4(0.6f, 0.6f, 0.6f, 1.0f), glm::vec4(0.2f, 0.2f, 0.2f, 1.0f));
 		cameraController = new CameraController(scene->getMainCamera());
 		return true;
 	}
