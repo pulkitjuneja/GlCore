@@ -161,8 +161,16 @@ Mesh *ResourceManager::loadMesh(string path, int loaderFlags)
 	}
 	string directory = path.substr(0, path.find_last_of('/'));
 
+	// Sort scene meshes based on material
+	struct {
+		bool operator () (aiMesh* a, aiMesh* b) {
+			return a->mMaterialIndex < b->mMaterialIndex;
+		}
+	} meshMaterialSort;
+	std::sort(scene->mMeshes, scene->mMeshes + scene->mNumMeshes, meshMaterialSort);
+
 	int vertexCount = 0;
-	int indexCount = 0;
+	int runningBaseIndexSum=0;
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
 	std::vector<SubMesh> submeshes;
@@ -170,18 +178,30 @@ Mesh *ResourceManager::loadMesh(string path, int loaderFlags)
 	bool hasNormals = true;
 	bool hasTexCoords = true;
 
-	submeshes.resize(scene->mNumMeshes);
+	submeshes.resize(scene->mNumMaterials-1);
+
+	int currentSubmeshIndex = -1;
+	int currentRunningMaterialIndex = -1;
+	int indexOffset = 0;
 
 	for (int i = 0; i < scene->mNumMeshes; i++)
 	{
 		aiMesh *currentMesh = scene->mMeshes[i];
 
-		submeshes[i].indexCount = currentMesh->mNumFaces * 3;
-		submeshes[i].baseVertex = vertexCount;
-		submeshes[i].baseIndex = indexCount;
+		if (currentMesh->mMaterialIndex != currentRunningMaterialIndex) {
+			currentRunningMaterialIndex = currentMesh->mMaterialIndex;
+			if (currentSubmeshIndex > -1) {
+				runningBaseIndexSum += submeshes[currentSubmeshIndex].indexCount;
+			}
+			currentSubmeshIndex++;
+			submeshes[currentSubmeshIndex].material = getAiSceneMaterial(scene, currentRunningMaterialIndex, directory);
+			submeshes[currentSubmeshIndex].baseVertex = vertexCount;
+			submeshes[currentSubmeshIndex].baseIndex = runningBaseIndexSum;
+			indexOffset = 0;
+		}
+		submeshes[currentSubmeshIndex].indexCount += currentMesh->mNumFaces * 3;
 
 		vertexCount += currentMesh->mNumVertices;
-		indexCount += submeshes[i].indexCount;
 
 		// extract vertex data from current mesh
 		for (int j = 0; j < currentMesh->mNumVertices; j++)
@@ -204,34 +224,10 @@ Mesh *ResourceManager::loadMesh(string path, int loaderFlags)
 		{
 			aiFace face = currentMesh->mFaces[j];
 			for (unsigned int k = 0; k < face.mNumIndices; k++)
-				indices.push_back(face.mIndices[k]);
+				indices.push_back(face.mIndices[k] + indexOffset);
 		}
 
-		Material *material = new Material();
-		material->name = string(&path[path.find_last_of('/') + 1], &path[path.find_last_of('.')]);
-		material->name += "_";
-		material->name += currentMesh->mName.C_Str() + std::to_string(i);
-
-		if (currentMesh->mMaterialIndex >= 0)
-		{
-			material->setShader(getShader("texturedMeshShader"));
-			aiMaterial *aiMaterial = scene->mMaterials[currentMesh->mMaterialIndex];
-			//aiMaterial->m
-			//material.
-
-			std::vector<Texture *> diffuseMaps = loadMaterialTextures(aiMaterial, aiTextureType_DIFFUSE, directory);
-			material->textures.insert(material->textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-			vector<Texture *> specularMaps = loadMaterialTextures(aiMaterial, aiTextureType_SPECULAR, directory);
-			material->textures.insert(material->textures.end(), specularMaps.begin(), specularMaps.end());
-		}
-
-		else
-		{
-			material->setShader(getShader("defaultShader"));
-		}
-
-		// load a default shader to the material
-		submeshes[i].material = material;
+		indexOffset += currentMesh->mNumFaces * 3;
 	}
 
 	Mesh *newMesh = new Mesh(vertices, indices, submeshes, hasNormals, hasTexCoords);
@@ -241,6 +237,33 @@ Mesh *ResourceManager::loadMesh(string path, int loaderFlags)
 	std::cout << "Mesh Loaded: " << path << std::endl;
 	return loadedMeshes.find(path)->second;
 }
+
+Material * ResourceManager::getAiSceneMaterial(const aiScene * scene, int materialIndex, string directory)
+{
+	Material *material = new Material();
+	material->name = string(directory);
+	material->name += "_";
+	material->name += std::to_string(materialIndex);
+
+	if (materialIndex >= 0)
+	{
+		material->setShader(getShader("texturedMeshShader"));
+		aiMaterial *aiMaterial = scene->mMaterials[materialIndex];
+
+		std::vector<Texture *> diffuseMaps = loadMaterialTextures(aiMaterial, aiTextureType_DIFFUSE, directory);
+		material->textures.insert(material->textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+		vector<Texture *> specularMaps = loadMaterialTextures(aiMaterial, aiTextureType_SPECULAR, directory);
+		material->textures.insert(material->textures.end(), specularMaps.begin(), specularMaps.end());
+	}
+
+	else
+	{
+		material->setShader(getShader("defaultShader"));
+	}
+
+	return material;
+}
+
 
 Texture * ResourceManager::getTexture(const string & textureName)
 {

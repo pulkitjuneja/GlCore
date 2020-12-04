@@ -16,7 +16,12 @@ struct SubMesh {
 	uint32_t baseVertex;
 
 public:
-	SubMesh() {}
+	SubMesh() {
+		material = NULL;
+		baseIndex = 0;
+		indexCount = 0;
+		baseVertex = 0;
+	}
 
 	SubMesh(Material* material, uint32_t baseIndex, uint32_t indexCount, uint32_t baseVertex) {
 		this->material = material;

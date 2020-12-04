@@ -51,6 +51,7 @@ private:
 
 	void readFromFile(const string &fileName, char* & shaderContent);
 	std::vector<Texture *> loadMaterialTextures(aiMaterial* aiMaterial, aiTextureType textureType, string directory);
+	Material* getAiSceneMaterial(const aiScene* scene, int materialIndex, string directory);
 
 public:
     static ResourceManager* getInstance ();
