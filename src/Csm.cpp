@@ -214,7 +214,6 @@
 	 Material* depthMapMaterial = new Material();
 	 depthMapMaterial->setShader(ResourceManager::getInstance()->getShader("depthMap"));
 	 for (int i = 0; i < splitCount; i++) {
-		 depthMapMaterial->getShader()->use();
 		 depthMapMaterial->getShader()->setMat4("lightSpaceMatrix", cropMatrices[i]);
 		 shadowFbos[i]->bind();
 		 glClear(GL_DEPTH_BUFFER_BIT);

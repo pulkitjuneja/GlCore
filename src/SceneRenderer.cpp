@@ -44,22 +44,22 @@ void SceneRenderer::renderScene(Scene * scene, Material* overrideMaterial)
 		glBindVertexArray(currentMesh->VAO);
 
 		Shader* currentShader = nullptr;
-		if(overrideMaterial) {
-			currentShader = overrideMaterial->getShader();
-		}
 
 		for (int i = 0; i < currentMesh->subMeshes.size(); i++) {
 
 			SubMesh currentSubMesh = currentMesh->subMeshes[i];
 			Shader* submeshShader = currentSubMesh.material->getShader();
 
-			if (!currentShader && !overrideMaterial) {
+			if (overrideMaterial) {
+				currentShader = overrideMaterial->getShader();
+			}
+			else {
 				currentShader = submeshShader;
-				currentShader->use();
 			}
 
-			if (!overrideMaterial && submeshShader->shaderName.compare(currentShader->shaderName)) {
-				currentShader = submeshShader;
+
+			if (currentShader->getShaderID() != currentShaderProgramInUse) {
+				currentShaderProgramInUse = currentShader->getShaderID();
 				currentShader->use();
 			}
 
