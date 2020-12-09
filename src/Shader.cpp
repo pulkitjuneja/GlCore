@@ -34,7 +34,10 @@ void Shader::readFromFile(const string &fileName, char* & shaderContent) {
 }
 
 void Shader::use() {
-    glUseProgram(shaderProgram);
+	if (getShaderID() != currentShaderProgramInUse) {
+		currentShaderProgramInUse = getShaderID();
+		glUseProgram(shaderProgram);
+	}
 }
 
 GLuint Shader::getShaderID()

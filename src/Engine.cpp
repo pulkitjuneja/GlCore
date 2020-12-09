@@ -12,6 +12,7 @@ void Engine::loadDefaultShaders()
 	ResourceManager::getInstance()->loadShader("Shaders/TexturedMesh.vert", "Shaders/TexturedMesh.frag", "texturedMeshShader");
 	ResourceManager::getInstance()->loadShader("Shaders/DepthMap.vert", "Shaders/DepthMap.frag", "depthMap");
 	ResourceManager::getInstance()->loadShader("Shaders/DefferedGeometryPass.vert", "Shaders/DefferedGeometryPass.frag", "defferedGeometryPass");
+	ResourceManager::getInstance()->loadShader("Shaders/DefferedDirectionalLight.vert", "Shaders/DefferedDirectionalLight.frag", "defferedDirectionalLightPass");
 }
 
 void Engine::start() {

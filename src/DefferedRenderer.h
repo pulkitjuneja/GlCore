@@ -29,6 +29,8 @@ class DefferedRenderer {
 	//UniformBUffers
 	UniformBuffer* perFrameUbo;
 	SceneRenderer sceneRenderer;
+
+	GLuint screenQuadVAO;
 public:
 	DefferedRenderer();
 	void runGeometryPass();

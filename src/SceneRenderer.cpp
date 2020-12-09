@@ -28,10 +28,8 @@ void SceneRenderer::bindGlobalMaps()
 
 void SceneRenderer::renderScene(Scene * scene, Material* overrideMaterial, bool passBaseMaterialProperties)
 {
-	std::vector<Entity*> entities = scene->getEntities();;
+	std::vector<Entity*> entities = scene->getEntities();
 	std::vector<Entity*>::iterator it = entities.begin();
-
-	bindGlobalMaps();
 
 	for (; it != entities.end(); it++) {
 		Entity* ent = (*it);
@@ -57,11 +55,7 @@ void SceneRenderer::renderScene(Scene * scene, Material* overrideMaterial, bool 
 				currentShader = submeshShader;
 			}
 
-
-			if (currentShader->getShaderID() != currentShaderProgramInUse) {
-				currentShaderProgramInUse = currentShader->getShaderID();
-				currentShader->use();
-			}
+			currentShader->use();
 
 			currentShader->setMat4("modelMatrix", ent->getTransform()->getTransformationMatrix());
 

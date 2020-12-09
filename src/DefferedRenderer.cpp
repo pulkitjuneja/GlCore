@@ -41,6 +41,9 @@ DefferedRenderer::DefferedRenderer()
 	gBuffer->unBind();
 
 	perFrameUbo = new UniformBuffer(sizeof(PerFrameUniforms), 0);
+
+	// Create an empoty VAO to be bound when rendering screen quad
+	glGenVertexArrays(1, &screenQuadVAO);
 	std::cout << glGetError() << std::endl;
 }
 
@@ -78,6 +81,21 @@ void DefferedRenderer::render()
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	Shader* directionalLightShader = ResourceManager::getInstance()->getShader("defferedDirectionalLightPass");
+	directionalLightShader->use();
+	//Bind gbuffers
+	gBufferPositionTexture->bind(GL_TEXTURE0 + 11);
+	directionalLightShader->setInt("positionTexture", 11);
+	gBufferNormalTexture->bind(GL_TEXTURE0 + 12);
+	directionalLightShader->setInt("normalTexture", 12);
+	gBufferColorTexture->bind(GL_TEXTURE0 + 13);
+	directionalLightShader->setInt("albedoTexture", 13);
+
+	//render simple quad
+	glBindVertexArray(screenQuadVAO);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	//std::cout << glGetError() << std::endl;
+
 	// render scene normall for testing
-	sceneRenderer.renderScene(scene);
+	//sceneRenderer.renderScene(scene);
 }
