@@ -12,7 +12,6 @@ struct PointLight {
 	vec4 diffuse;
 	vec4 specular;
 	vec4 ambient;
-	// TODO add back linear and quadratic attenuation to this class
 };
 
 struct DirectionalLight {
@@ -40,11 +39,9 @@ layout (std140) uniform csmUniforms
 };
 
 in VS_OUT {
-    vec3 fragPos;
+    vec3 worldPos;
     vec3 vertNormal;
     vec2 texCoords;
-	vec4 ndcFragPos;
-    vec4 fragPosLightSpace;
 } vsOut;
 
 
@@ -58,20 +55,19 @@ out vec4 FragColor;
 vec3 calculatePointLight (PointLight pointLight, vec3 normal, vec3 viewDir) {
 
 	vec3 diffuseColor = vec3(texture(material.texture_diffuse[0],vsOut.texCoords));
-	vec3 specularStrength;
-
+	float specularStrength;
 
 	if(material.specularCount > 0) {
-		specularStrength  = vec3(texture(material.texture_specular[0], vsOut.texCoords));
+		specularStrength  = texture(material.texture_specular[0], vsOut.texCoords).r * 2;
 	} else {
-		specularStrength = vec3(0.1,0.1,0.1);
+		specularStrength = 0.1;
 	}
 
-	vec3 lightDir = normalize(pointLight.position.xyz - vsOut.fragPos);
+	vec3 lightDir = normalize(pointLight.position.xyz - vsOut.worldPos);
 	float diff = max(dot(normal, lightDir), 0.0);
-	vec3 reflectDir = reflect(-lightDir, normal);
-	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
-	float distance = length(pointLight.position.xyz - vsOut.fragPos);
+	vec3 halfwayDir = normalize(lightDir + viewDir);
+    float spec = pow(max(dot(halfwayDir, normal), 0.0),32);
+	float distance = length(pointLight.position.xyz - vsOut.worldPos);
 
 	float attenuation = 1.0/(1.0 + 0.0025f *distance + 0.00007f * (distance*distance));
 
@@ -93,7 +89,7 @@ float ShadowCalculation(float fragDepth, vec3 normal, vec3 lightDirection)
 	}
 
 	blend = clamp((fragDepth - farBounds[index]*0.995)*200.0,0.0,1.0); // what is this doing exactly ??
-	vec4 lightSpacePos = textureMatrices[index] * vec4(vsOut.fragPos, 1.0f);
+	vec4 lightSpacePos = textureMatrices[index] * vec4(vsOut.worldPos, 1.0f);
 	float currentDepth = lightSpacePos.z;
 	float bias = max(0.0005 * (1.0 - dot(normal, lightDirection)), 0.0005);
 
@@ -139,22 +135,22 @@ vec3 debug_color(float fragDepth)
 }
 
 vec3 calculateDirectionalLight (vec3 normal, vec3 viewDir) {
-	float fragDepth = (vsOut.ndcFragPos.z/ vsOut.ndcFragPos.w) * 0.5 + 0.5;
+	vec4 clipPos = projectionMatrix * viewMatrix * vec4(vsOut.worldPos, 1.0);
+	float fragDepth = (clipPos.z/ clipPos.w) * 0.5 + 0.5;
 	vec3 diffuseColor = vec3(texture(material.texture_diffuse[0],vsOut.texCoords));
 	//vec3 diffuseColor = debug_color(fragDepth);
-	vec3 specularStrength;
+	float specularStrength;
 
 	if(material.specularCount > 0) {
-		specularStrength  = vec3(texture(material.texture_specular[0], vsOut.texCoords));
+		specularStrength  = texture(material.texture_specular[0], vsOut.texCoords).r * 2;
 	} else {
-		specularStrength = vec3(0.1,0.1,0.1);
+		specularStrength = 0.1;
 	}
 
-	normal = normal;
 	vec3 lightDir = normalize(-directionalLight.direction.xyz);
     float diff = max(dot(normal, lightDir), 0.0);
-    vec3 reflectDir = reflect(-lightDir, normal);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0),32);
+	vec3 halfwayDir = normalize(lightDir + viewDir);
+    float spec = pow(max(dot(halfwayDir, normal), 0.0),32);
 
 	float shadow = ShadowCalculation(fragDepth, normal, lightDir);
 
@@ -168,7 +164,7 @@ vec3 calculateDirectionalLight (vec3 normal, vec3 viewDir) {
 void main()
 {
 	vec3 normal = normalize(vsOut.vertNormal);
-	vec3 viewDir = normalize(cameraPosition - vsOut.fragPos);
+	vec3 viewDir = normalize(cameraPosition - vsOut.worldPos);
 	vec3 result = vec3(0,0,0);
 
 	result += calculateDirectionalLight(normal, viewDir);

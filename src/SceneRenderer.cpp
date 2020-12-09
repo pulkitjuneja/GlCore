@@ -26,7 +26,7 @@ void SceneRenderer::bindGlobalMaps()
 	}
 }
 
-void SceneRenderer::renderScene(Scene * scene, Material* overrideMaterial)
+void SceneRenderer::renderScene(Scene * scene, Material* overrideMaterial, bool passBaseMaterialProperties)
 {
 	std::vector<Entity*> entities = scene->getEntities();;
 	std::vector<Entity*>::iterator it = entities.begin();
@@ -68,27 +68,29 @@ void SceneRenderer::renderScene(Scene * scene, Material* overrideMaterial)
 			unsigned int diffuseNr = 0;
 			unsigned int specularNr = 0;
 
-			for (int j = 0; j < currentSubMesh.material->textures.size(); j++) {
-				Texture* currentTexture = currentSubMesh.material->textures[j];
-				string name, number;
-				if (currentTexture->type == TextureType::DIFFUSE) {
-					name = "texture_diffuse";
-					number = std::to_string(diffuseNr++);
-				}
-				else if (currentTexture->type == TextureType::SPECULAR) {
-					name = "texture_specular";
-					number = std::to_string(specularNr++);
+			if (!overrideMaterial || (overrideMaterial && passBaseMaterialProperties)) {
+				for (int j = 0; j < currentSubMesh.material->textures.size(); j++) {
+					Texture* currentTexture = currentSubMesh.material->textures[j];
+					string name, number;
+					if (currentTexture->type == TextureType::DIFFUSE) {
+						name = "texture_diffuse";
+						number = std::to_string(diffuseNr++);
+					}
+					else if (currentTexture->type == TextureType::SPECULAR) {
+						name = "texture_specular";
+						number = std::to_string(specularNr++);
+					}
+
+					currentTexture->bind(GL_TEXTURE0 + j);
+					currentShader->setInt("material." + name + "[" + number + "]", j);
 				}
 
-				currentTexture->bind(GL_TEXTURE0 + j);
-				currentShader->setInt("material." + name + "[" + number + "]", j);
+				currentShader->setInt("material.specularCount", specularNr);
+				currentShader->setInt("material.diffuseCount", diffuseNr);
 			}
-
-			currentShader->setInt("material.specularCount", specularNr);
-			currentShader->setInt("material.diffuseCount", diffuseNr);
 			currentShader->setInt("shadowMap", 10);
 			glDrawElementsBaseVertex(GL_TRIANGLES, currentSubMesh.indexCount, GL_UNSIGNED_INT, (void*)(sizeof(unsigned int) * currentSubMesh.baseIndex), currentSubMesh.baseVertex);
-
+			
 		}
 	}
 	glBindVertexArray(0);

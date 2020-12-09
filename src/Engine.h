@@ -7,6 +7,7 @@
 
 #include "Globals.h"
 #include "Renderer.h"
+#include "DefferedRenderer.h"
 
 class Engine {
 
@@ -15,6 +16,7 @@ protected:
     bool isEngineRunning = true;
 	bool setupSFML();
 	Renderer* renderer;
+	DefferedRenderer* defferedRenderer;
 
 public:
     static sf::Time deltaTime;
