@@ -40,7 +40,9 @@ DefferedRenderer::DefferedRenderer()
 	gBuffer->checkStatus();
 	gBuffer->unBind();
 
+	csm = new Csm(0.3, 350.0f, 4, 4096);
 	perFrameUbo = new UniformBuffer(sizeof(PerFrameUniforms), 0);
+	CsmUbo = new UniformBuffer(sizeof(CSMUniforms), 1);
 
 	// Create an empoty VAO to be bound when rendering screen quad
 	glGenVertexArrays(1, &screenQuadVAO);
@@ -54,15 +56,6 @@ void DefferedRenderer::setScene(Scene* scene)
 
 void DefferedRenderer::runGeometryPass()
 {
-	sceneRenderer.setGlobalUniforms(perFrameUniforms, scene);
-
-	void* mem = perFrameUbo->mapToMemory(GL_WRITE_ONLY);
-
-	if (mem) {
-		memcpy(mem, &perFrameUniforms, sizeof(PerFrameUniforms));
-		perFrameUbo->unmapFromMemroy();
-	}
-
 	gBuffer->bind();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	Material* gBufferMaterial = new Material();
@@ -75,6 +68,27 @@ void DefferedRenderer::render()
 {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	csm->update(scene->getMainCamera(), scene->getDirectionalLight()->direction);
+	sceneRenderer.setGlobalUniforms(perFrameUniforms, scene);
+	csm->updateUniforms(csmUniforms);
+
+	void* mem = perFrameUbo->mapToMemory(GL_WRITE_ONLY);
+
+	if (mem) {
+		memcpy(mem, &perFrameUniforms, sizeof(PerFrameUniforms));
+		perFrameUbo->unmapFromMemroy();
+	}
+
+	auto siz = sizeof(int);
+	void* mem2 = CsmUbo->mapToMemory(GL_WRITE_ONLY);
+	if (mem2) {
+		memcpy(mem2, &csmUniforms, sizeof(CSMUniforms));
+		CsmUbo->unmapFromMemroy();
+	}
+
+	csm->render(scene);
+	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
 	runGeometryPass();
 
@@ -90,6 +104,7 @@ void DefferedRenderer::render()
 	directionalLightShader->setInt("normalTexture", 12);
 	gBufferColorTexture->bind(GL_TEXTURE0 + 13);
 	directionalLightShader->setInt("albedoTexture", 13);
+	directionalLightShader->setInt("shadowMap", 10);
 
 	//render simple quad
 	glBindVertexArray(screenQuadVAO);

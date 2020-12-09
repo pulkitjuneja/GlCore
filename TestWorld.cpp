@@ -27,7 +27,7 @@ public:
 		string crysisMeshLocation = "Assets/Meshes/crysisM/nanosuit.obj";
 
 		scene = new Scene();
-		renderer->setScene(scene);
+		defferedRenderer->setScene(scene);
 		sponzaEntity = scene->createEntity<Entity>("Model", ResourceManager::getInstance()->loadMesh(sponzaMeshLocation));
 		crysisEntity = scene->createEntity<Entity>("CrysisModel", ResourceManager::getInstance()->loadMesh(crysisMeshLocation));
 

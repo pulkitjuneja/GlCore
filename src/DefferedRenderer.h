@@ -13,6 +13,7 @@
 #include "ResourceManager.hpp"
 #include "Uniforms.h"
 #include "SceneRenderer.h"
+#include "Csm.h"
 
 class DefferedRenderer {
 	Scene* scene;
@@ -25,10 +26,14 @@ class DefferedRenderer {
 
 	//Uniforms
 	PerFrameUniforms perFrameUniforms;
+	CSMUniforms csmUniforms;
 
 	//UniformBUffers
 	UniformBuffer* perFrameUbo;
+	UniformBuffer* CsmUbo;
+
 	SceneRenderer sceneRenderer;
+	Csm* csm;
 
 	GLuint screenQuadVAO;
 public:

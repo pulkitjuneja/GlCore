@@ -22,8 +22,8 @@ void Engine::start() {
         isEngineRunning = false;
     }
 
-	renderer = new Renderer();
-	// defferedRenderer = new DefferedRenderer();
+	//renderer = new Renderer();
+	defferedRenderer = new DefferedRenderer();
 
     if(!init()) {
         isEngineRunning = false;
@@ -52,7 +52,7 @@ void Engine::start() {
         timeSinceStart += deltaTime;
         update();
 
-		renderer->render();
+		defferedRenderer->render();
 
         window->display( );
     }
