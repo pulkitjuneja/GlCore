@@ -5,6 +5,8 @@ void SceneRenderer::setGlobalUniforms(PerFrameUniforms &perFrameUniforms, Scene*
 	Camera* mainCamera = scene->getMainCamera();
 	perFrameUniforms.viewMatrix = mainCamera->getViewMatrix();
 	perFrameUniforms.projectionMatrix = mainCamera->getProjectionMatrix();
+	glm::vec3 cameraPosition = mainCamera->transform.getPosition();
+	perFrameUniforms.cameraPosition = glm::vec4(cameraPosition.x, cameraPosition.y, cameraPosition.z, 1.0f);
 
 	// set directional light
 	perFrameUniforms.directionalLight = *scene->getDirectionalLight();

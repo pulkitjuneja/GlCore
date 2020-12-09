@@ -28,6 +28,7 @@ layout (std140) uniform perFrameUniforms
 	mat4 lightSpaceMatrix;
 	DirectionalLight directionalLight;
 	PointLight pointLights[10];
+	vec4 cameraPosition;
 	int pointLightCount;
 };
 
@@ -48,7 +49,6 @@ in VS_OUT {
 uniform sampler2DArray shadowMap;
 
 uniform Material material;
-uniform vec3 cameraPosition;
 
 out vec4 FragColor;
 
@@ -164,7 +164,7 @@ vec3 calculateDirectionalLight (vec3 normal, vec3 viewDir) {
 void main()
 {
 	vec3 normal = normalize(vsOut.vertNormal);
-	vec3 viewDir = normalize(cameraPosition - vsOut.worldPos);
+	vec3 viewDir = normalize(vec3(cameraPosition) - vsOut.worldPos);
 	vec3 result = vec3(0,0,0);
 
 	result += calculateDirectionalLight(normal, viewDir);
