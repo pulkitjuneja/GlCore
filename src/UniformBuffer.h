@@ -9,6 +9,8 @@ class UniformBuffer {
 	GLuint id;
 public:
 	UniformBuffer(GLsizeiptr bufferSize, GLuint bindIndex);
+	void bind();
+	void unBind();
 	void setData(GLintptr offset, GLsizeiptr size, void* data);
 	void* mapToMemory(GLenum access);
 	void unmapFromMemroy();

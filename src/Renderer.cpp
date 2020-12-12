@@ -22,6 +22,7 @@ void Renderer::render()
 	sceneRenderer.setGlobalUniforms(perFrameUniforms, scene);
 	csm->updateUniforms(csmUniforms);
 
+	perFrameUbo->bind();
 	void* mem = perFrameUbo->mapToMemory(GL_WRITE_ONLY);
 
 	if (mem) {
@@ -29,6 +30,7 @@ void Renderer::render()
 		perFrameUbo->unmapFromMemroy();
 	}
 
+	CsmUbo->bind();
 	auto siz = sizeof(int);
 	void* mem2 = CsmUbo->mapToMemory(GL_WRITE_ONLY);
 	if (mem2) {

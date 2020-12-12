@@ -48,7 +48,7 @@ void DefferedRenderer::createUVSphere()
 	pointVolumeMesh = new Mesh(vertices, indices, submeshes, false, false);
 }
 
-DefferedRenderer::DefferedRenderer()
+void DefferedRenderer::setupGBuffer()
 {
 	gBuffer = new FrameBuffer();
 	gBuffer->bind();
@@ -86,14 +86,31 @@ DefferedRenderer::DefferedRenderer()
 	gBuffer->attachRenderBuffer(GL_DEPTH_COMPONENT, GL_DEPTH_ATTACHMENT, SCREEN_WIDTH, SCREEN_HEIGHT);
 	gBuffer->checkStatus();
 	gBuffer->unBind();
+}
 
+DefferedRenderer::DefferedRenderer()
+{	
+	setupGBuffer();
 	csm = new Csm(0.3, 350.0f, 4, 4096);
 	perFrameUbo = new UniformBuffer(sizeof(PerFrameUniforms), 0);
 	CsmUbo = new UniformBuffer(sizeof(CSMUniforms), 1);
 
+	directionalLightShader = ResourceManager::getInstance()->getShader("defferedDirectionalLightPass");
+	pointLightShader = ResourceManager::getInstance()->getShader("defferedPointLightPass");
+
+	directionalLightShader->setInt("positionTexture", 11);
+	directionalLightShader->setInt("normalTexture", 12);
+	directionalLightShader->setInt("albedoTexture", 13);
+	directionalLightShader->setInt("shadowMap", 10);
+
+	pointLightShader->setInt("positionTexture", 11);
+	pointLightShader->setInt("normalTexture", 12);
+	pointLightShader->setInt("albedoTexture", 13);
+
 	// Create an empoty VAO to be bound when rendering screen quad
 	glGenVertexArrays(1, &screenQuadVAO);
 	createUVSphere();
+
 	std::cout << glGetError() << std::endl;
 }
 
@@ -121,14 +138,7 @@ void DefferedRenderer::runDirectionalLightPass()
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	Shader* directionalLightShader = ResourceManager::getInstance()->getShader("defferedDirectionalLightPass");
 	directionalLightShader->use();
-	//Bind gbuffers
-	
-	directionalLightShader->setInt("positionTexture", 11);
-	directionalLightShader->setInt("normalTexture", 12);
-	directionalLightShader->setInt("albedoTexture", 13);
-	directionalLightShader->setInt("shadowMap", 10);
 
 	//render simple quad
 	glBindVertexArray(screenQuadVAO);
@@ -141,11 +151,8 @@ void DefferedRenderer::runPointLightPass()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE, GL_ONE);
 	glFrontFace(GL_CW);
-	Shader* pointLightShader = ResourceManager::getInstance()->getShader("defferedPointLightPass");
 	pointLightShader->use();
-	pointLightShader->setInt("positionTexture", 11);
-	pointLightShader->setInt("normalTexture", 12);
-	pointLightShader->setInt("albedoTexture", 13);
+
 	glBindVertexArray(pointVolumeMesh->VAO);
 
 	glDrawElementsInstanced(GL_TRIANGLES, pointVolumeMesh->subMeshes[0].indexCount, GL_UNSIGNED_INT, 0, scene->getPointLIghts().size());
@@ -164,6 +171,7 @@ void DefferedRenderer::render()
 	sceneRenderer.setGlobalUniforms(perFrameUniforms, scene);
 	csm->updateUniforms(csmUniforms);
 
+	perFrameUbo->bind();
 	void* mem = perFrameUbo->mapToMemory(GL_WRITE_ONLY);
 
 	if (mem) {
@@ -171,6 +179,7 @@ void DefferedRenderer::render()
 		perFrameUbo->unmapFromMemroy();
 	}
 
+	CsmUbo->bind();
 	auto siz = sizeof(int);
 	void* mem2 = CsmUbo->mapToMemory(GL_WRITE_ONLY);
 	if (mem2) {

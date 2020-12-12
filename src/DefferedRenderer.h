@@ -38,7 +38,11 @@ class DefferedRenderer {
 	GLuint screenQuadVAO;
 	Mesh* pointVolumeMesh;
 
+	Shader* directionalLightShader;
+	Shader* pointLightShader;
+
 	void createUVSphere();
+	void setupGBuffer();
 public:
 	DefferedRenderer();
 	void runGeometryPass();
