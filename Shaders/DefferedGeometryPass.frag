@@ -15,6 +15,7 @@ struct PointLight {
 	vec4 diffuse;
 	vec4 specular;
 	vec4 ambient;
+	float radius;
 };
 
 struct DirectionalLight {
@@ -54,5 +55,5 @@ void main()
     // and the diffuse per-fragment color
     gAlbedoSpec.rgb = texture(material.texture_diffuse[0], vsOut.texCoords).rgb;
     // store specular intensity in gAlbedoSpec's alpha component
-    gAlbedoSpec.a = mix(0.1f, texture(material.texture_specular[0], vsOut.texCoords).r, step(0.0f, material.specularCount));
+    gAlbedoSpec.a = mix(0.1f, texture(material.texture_specular[0], vsOut.texCoords).r, step(1.0f, material.specularCount));
 }

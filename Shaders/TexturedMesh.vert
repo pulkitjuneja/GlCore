@@ -4,15 +4,13 @@ layout (location = 1) in vec3 normal;
 layout (location = 2) in vec2 texCoords;
 
 uniform mat4 modelMatrix;
-//uniform mat4 viewMatrix;
-//uniform mat4 projectionMatrix;
-//uniform mat4 lightSpaceMatrix;
 
 struct PointLight {
 	vec4 position;
 	vec4 diffuse;
 	vec4 specular;
 	vec4 ambient;
+	float radius;
 };
 
 struct DirectionalLight {

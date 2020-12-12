@@ -36,9 +36,14 @@ class DefferedRenderer {
 	Csm* csm;
 
 	GLuint screenQuadVAO;
+	Mesh* pointVolumeMesh;
+
+	void createUVSphere();
 public:
 	DefferedRenderer();
 	void runGeometryPass();
+	void runDirectionalLightPass();
+	void runPointLightPass();
 	void setScene(Scene* scene);
 	//void runLightingPass();
 	void render();

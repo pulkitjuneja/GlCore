@@ -13,6 +13,7 @@ struct PointLight {
 	vec4 diffuse;
 	vec4 specular;
 	vec4 ambient;
+	float radius;
 };
 
 struct DirectionalLight {
