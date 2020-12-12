@@ -148,11 +148,7 @@ void DefferedRenderer::runPointLightPass()
 	pointLightShader->setInt("albedoTexture", 13);
 	glBindVertexArray(pointVolumeMesh->VAO);
 
-	auto pointLights = scene->getPointLIghts();
-	for (int i = 0; i < pointLights.size(); i++) {
-		pointLightShader->setInt("lightIndex", i);
-		glDrawElements(GL_TRIANGLES, pointVolumeMesh->subMeshes[0].indexCount, GL_UNSIGNED_INT, 0);
-	}
+	glDrawElementsInstanced(GL_TRIANGLES, pointVolumeMesh->subMeshes[0].indexCount, GL_UNSIGNED_INT, 0, scene->getPointLIghts().size());
 
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_BLEND);

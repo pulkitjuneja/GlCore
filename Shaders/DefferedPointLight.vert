@@ -2,6 +2,7 @@
 
 layout(location = 0) in vec3 position;
 out vec4 fragPos;
+flat out int lightIndex;
 
 struct PointLight {
 	vec4 position;
@@ -29,11 +30,10 @@ layout (std140) uniform perFrameUniforms
 	int pointLightCount;
 };
 
-uniform int lightIndex;
-
 void main () {
-	vec3 lightPosition = pointLights[lightIndex].position.xyz;
-	float radius = pointLights[lightIndex].radius;
+	vec3 lightPosition = pointLights[gl_InstanceID].position.xyz;
+	float radius = pointLights[gl_InstanceID].radius;
+	lightIndex = gl_InstanceID;
 	fragPos = projectionMatrix * viewMatrix * vec4((position * radius) + lightPosition, 1.0);
 	gl_Position = fragPos;
 }

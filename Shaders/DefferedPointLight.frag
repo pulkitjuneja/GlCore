@@ -34,7 +34,7 @@ layout (std140) uniform perFrameUniforms
 
 in vec4 fragPos;
 
-uniform int lightIndex;
+flat in int lightIndex;
 
 void main () {
 	vec2 fragTexcoords = (fragPos.xy / fragPos.w) * 0.5 + 0.5;
