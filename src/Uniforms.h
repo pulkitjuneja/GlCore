@@ -24,6 +24,14 @@ public:
 	ALIGNED(16) glm::vec4 diffuse;
 	ALIGNED(16) glm::vec4 specular;
 	ALIGNED(16) glm::vec4 ambient;
+	ALIGNED(16) float radius;
+	PointLight() {
+		float constant = 1.0;
+		float linear = 0.0025f;
+		float quadratic = 0.00007f;
+		float lightMax = std::fmaxf(std::fmaxf(diffuse.r, diffuse.g), diffuse.b);
+		radius = 150;
+	}
 };
 
 struct PerFrameUniforms {
@@ -32,6 +40,7 @@ struct PerFrameUniforms {
 	ALIGNED(16) glm::mat4 lightSpaceMatrix;
 	ALIGNED(16) DirectionalLight directionalLight;
 	ALIGNED(16) PointLight pointLights[MAX_POINT_LIGHTS];
+	ALIGNED(16) glm::vec4 cameraPosition;
 	int pointLightCount;
 };
 

@@ -7,7 +7,8 @@ A minimal opengl based rendering engine
 * Resource Management (mesh, texture, shaders, materials)
 * Camera class
 * Different Light casters (Directional light, point light, spot light)
-* Shadows (TBD)
+* Cascaded shadow maps with PCF
+* Deffered shading path with instanced light volumes
 
 ![screenshot1](https://raw.githubusercontent.com/pulkitjuneja/GlCore/master/Assets/Screenshots/scr4.png)
 ![screenshot1](https://raw.githubusercontent.com/pulkitjuneja/GlCore/master/Assets/Screenshots/scr3.png)

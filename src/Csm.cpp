@@ -214,7 +214,6 @@
 	 Material* depthMapMaterial = new Material();
 	 depthMapMaterial->setShader(ResourceManager::getInstance()->getShader("depthMap"));
 	 for (int i = 0; i < splitCount; i++) {
-		 depthMapMaterial->getShader()->use();
 		 depthMapMaterial->getShader()->setMat4("lightSpaceMatrix", cropMatrices[i]);
 		 shadowFbos[i]->bind();
 		 glClear(GL_DEPTH_BUFFER_BIT);
@@ -230,15 +229,15 @@
 	 shadowMaps = ResourceManager::getInstance()->generateTexture(CSM_SHADOW_MAPS, TextureType::DEPTH, shadowMapSize, shadowMapSize,
 		 GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT, splitCount);
 	 shadowMaps->bind();
+	 shadowMaps->bind(GL_TEXTURE0 + 10);
 	 shadowMaps->setMinMagFilter(GL_LINEAR, GL_LINEAR);
 	 shadowMaps->setWrapping(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
-	 shadowMaps->Unbind();
 
 	 for (int i = 0; i < splitCount; i++) {
 		 shadowFbos[i] = new FrameBuffer();
-		 shadowFbos[i]->attachDepthTarget(shadowMaps, 0, i);
+		 shadowFbos[i]->bind();
+		 shadowFbos[i]->attachDepthTarget(shadowMaps, 0, i, true);
 	 }
-
 	 biasMatrix = glm::mat4(0.5f, 0.0f, 0.0f, 0.0f,
 		 0.0f, 0.5f, 0.0f, 0.0f,
 		 0.0f, 0.0f, 0.5f, 0.0f,

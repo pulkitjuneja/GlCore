@@ -34,41 +34,49 @@ void Shader::readFromFile(const string &fileName, char* & shaderContent) {
 }
 
 void Shader::use() {
-        glUseProgram(shaderProgram);
+	if (getShaderID() != currentShaderProgramInUse) {
+		currentShaderProgramInUse = getShaderID();
+		glUseProgram(shaderProgram);
+	}
+}
+
+GLuint Shader::getShaderID()
+{
+	return shaderProgram;
 }
 
 void Shader::setBool(const string &name, bool value) const {
 	GLuint loc = getUniformLocation(name);
 	if (loc != -1) {
-		glUniform1i(getUniformLocation(name), (int)value);
+		glProgramUniform1i(shaderProgram, getUniformLocation(name), (int)value);
 	}
 }
 
 void Shader::setInt(const string &name, int value) const {
 	GLuint loc = getUniformLocation(name);
 	if (loc != -1) {
-		glUniform1i(getUniformLocation(name), value);
+		glProgramUniform1i(shaderProgram, getUniformLocation(name), value);
 	}
 }
 
 void Shader::setFloat(const string &name, float value) const {
 	GLuint loc = getUniformLocation(name);
 	if (loc != -1) {
-		glUniform1f(getUniformLocation(name), value);
+		glProgramUniform1f(shaderProgram, getUniformLocation(name), value);
 	}
 }
 
 void Shader::setFloat3(const string &name, float value1, float value2, float value3) {
 	GLuint loc = getUniformLocation(name);
 	if (loc != -1) {
-		glUniform3f(getUniformLocation(name), value1, value2, value3);
+		glProgramUniform3f(shaderProgram, getUniformLocation(name), value1, value2, value3);
 	}
 }
 
 void Shader::setMat4(const string &name, glm::mat4 &matrix) {
 	GLuint loc = getUniformLocation(name);
 	if (loc != -1) {
-		glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(matrix));
+		glProgramUniformMatrix4fv(shaderProgram, getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(matrix));
 	}
 }
 

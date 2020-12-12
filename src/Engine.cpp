@@ -11,6 +11,9 @@ void Engine::loadDefaultShaders()
 	ResourceManager::getInstance()->loadShader("Shaders/TexturedMeshUnlit.vert", "Shaders/TexturedMeshUnlit.frag", "texturedMeshUnlit");
 	ResourceManager::getInstance()->loadShader("Shaders/TexturedMesh.vert", "Shaders/TexturedMesh.frag", "texturedMeshShader");
 	ResourceManager::getInstance()->loadShader("Shaders/DepthMap.vert", "Shaders/DepthMap.frag", "depthMap");
+	ResourceManager::getInstance()->loadShader("Shaders/DefferedGeometryPass.vert", "Shaders/DefferedGeometryPass.frag", "defferedGeometryPass");
+	ResourceManager::getInstance()->loadShader("Shaders/DefferedDirectionalLight.vert", "Shaders/DefferedDirectionalLight.frag", "defferedDirectionalLightPass");
+	ResourceManager::getInstance()->loadShader("Shaders/DefferedPointLight.vert", "Shaders/DefferedPointLight.frag", "defferedPointLightPass");
 }
 
 void Engine::start() {
@@ -20,7 +23,8 @@ void Engine::start() {
         isEngineRunning = false;
     }
 
-	renderer = new Renderer();
+	//renderer = new Renderer();
+	defferedRenderer = new DefferedRenderer();
 
     if(!init()) {
         isEngineRunning = false;
@@ -49,7 +53,7 @@ void Engine::start() {
         timeSinceStart += deltaTime;
         update();
 
-		renderer->render();
+		defferedRenderer->render();
 
         window->display( );
     }
@@ -68,7 +72,7 @@ bool Engine::setupSFML() {
 
     settings.attributeFlags = sf::ContextSettings::Core;
 
-    window = new sf::Window( sf::VideoMode( SCREEN_WIDTH, SCREEN_HEIGHT, 32 ), "OpenGL SFML", sf::Style::Titlebar | sf::Style::Close, settings );
+    window = new sf::Window( sf::VideoMode( SCREEN_WIDTH, SCREEN_HEIGHT, 64 ), "OpenGL SFML", sf::Style::Titlebar | sf::Style::Close, settings );
 	window->setVerticalSyncEnabled(false);
     glewExperimental = GL_TRUE;
 

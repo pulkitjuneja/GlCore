@@ -12,9 +12,12 @@ void FrameBuffer::unBind() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void FrameBuffer::attachDepthTarget(Texture* texture, uint32_t mipLevel, int layer) {
-	texture->bind(GL_TEXTURE0);
-	bind();
+
+void FrameBuffer::attachDepthTarget(Texture* texture, uint32_t mipLevel, int layer, bool shouldBind)  {
+	if (shouldBind) {
+		texture->bind(GL_TEXTURE0);
+		bind();
+	}
 
 	if (texture->arraySize > 1) {
 		glFramebufferTextureLayer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, texture->textureId, mipLevel, layer);
@@ -22,8 +25,52 @@ void FrameBuffer::attachDepthTarget(Texture* texture, uint32_t mipLevel, int lay
 	else {
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, texture->target, texture->textureId, mipLevel);
 	}
-	glDrawBuffer(GL_NONE);
-	glReadBuffer(GL_NONE);
+
+	if (shouldBind) {
+		unBind();
+		texture->Unbind();
+	}
+}
+
+void FrameBuffer::attachRenderTarget(Texture * texture, uint32_t mipLevel, int attachmentIndex, int layer, bool shouldBind)
+{
+	if (shouldBind) {
+		texture->bind(GL_TEXTURE0);
+		bind();
+	}
+
+	if (texture->arraySize > 1) {
+		glFramebufferTextureLayer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + attachmentIndex, texture->textureId, mipLevel, layer);
+	}
+	else {
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + attachmentIndex, texture->target, texture->textureId, mipLevel);
+	}
+	if (shouldBind) {
+		unBind();
+		texture->Unbind();
+	}
+}
+
+void FrameBuffer::attachRenderBuffer(GLenum internalFormat, GLenum attachment, const uint32_t & w, const uint32_t & h, bool shouldBind)
+{
+	if (shouldBind) {
+		bind();
+	}
+	unsigned int rbo;
+	glGenRenderbuffers(1, &rbo);
+	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+	glRenderbufferStorage(GL_RENDERBUFFER, internalFormat, w, h);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, rbo);
+	if (shouldBind) {
+		unBind();
+	}
+}
+
+void FrameBuffer::checkStatus(bool shouldBind)
+{
+	if (shouldBind) {
+		bind();
+	}
 
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
@@ -59,11 +106,13 @@ void FrameBuffer::attachDepthTarget(Texture* texture, uint32_t mipLevel, int lay
 			break;
 		}
 		default:
+			error += "NOT";
 			break;
 		}
-		std::cout << error.c_str();
+		std::cout << error.c_str() << "\n";
 	}
 
-	unBind();
-	texture->Unbind();
+	if (shouldBind) {
+		unBind();
+	}
 }

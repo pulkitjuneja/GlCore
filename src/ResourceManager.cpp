@@ -8,7 +8,6 @@ ResourceManager *ResourceManager::instance;
 void ResourceManager::readFromFile(const std::string &fileName, char *&shaderContent)
 {
 	string fullPath = fileName;
-	cout << fullPath << "\n";
 	ifstream shaderFile(fullPath);
 	stringstream buffer;
 	buffer << shaderFile.rdbuf();
@@ -87,6 +86,7 @@ void ResourceManager::loadShader(const std::string &vertexShaderPath, const std:
 	newShader->setUniformBlockBinding("perFrameUniforms", 0);
 	newShader->setUniformBlockBinding("csmUniforms", 1);
 
+	cout << "Shader loaded : " << shaderName << " id : " << std::to_string(newShader->getShaderID()) << "\n";
 	loadedShaders.insert(make_pair(shaderName, newShader));
 }
 

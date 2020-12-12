@@ -10,23 +10,45 @@ UniformBuffer::UniformBuffer(GLsizeiptr bufferSize, GLuint bindIndex)
 	glBindBufferBase(GL_UNIFORM_BUFFER, bindIndex, id);
 }
 
-void UniformBuffer::setData(GLintptr offset, GLsizeiptr size, void * data)
+void UniformBuffer::bind()
 {
 	glBindBuffer(GL_UNIFORM_BUFFER, id);
-	glBufferSubData(GL_UNIFORM_BUFFER, offset, size, data);
+}
+
+void UniformBuffer::unBind()
+{
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
-void* UniformBuffer::mapToMemory(GLenum access) {
-	glBindBuffer(GL_UNIFORM_BUFFER, id);
+void UniformBuffer::setData(GLintptr offset, GLsizeiptr size, void * data, bool bind)
+{
+	if (bind) {
+		glBindBuffer(GL_UNIFORM_BUFFER, id);
+	}
+	glBufferSubData(GL_UNIFORM_BUFFER, offset, size, data);
+	if (bind) {
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	}
+}
+
+void* UniformBuffer::mapToMemory(GLenum access, bool bind) {
+	if (bind) {
+		glBindBuffer(GL_UNIFORM_BUFFER, id);
+	}
 	void* ptr = glMapBuffer(GL_UNIFORM_BUFFER, access);
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	if (bind) {
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	}
 	return ptr;
 }
 
-void UniformBuffer::unmapFromMemroy()
+void UniformBuffer::unmapFromMemroy(bool bind)
 {
-	glBindBuffer(GL_UNIFORM_BUFFER, id);
+	if (bind) {
+		glBindBuffer(GL_UNIFORM_BUFFER, id);
+	}
 	glUnmapBuffer(GL_UNIFORM_BUFFER);
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	if (bind) {
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	}
 }

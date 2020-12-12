@@ -25,7 +25,6 @@ public:
 	Renderer();
 	void setScene(Scene* scene);
 	SceneRenderer sceneRenderer;
-	ShadowMapRenderer shadowMaprender;
 	Csm* csm;
 	void render();
 };

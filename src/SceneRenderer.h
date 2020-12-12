@@ -11,7 +11,7 @@ class SceneRenderer {
 public:
 	void setGlobalUniforms(PerFrameUniforms &perFrameUniforms, Scene* scene);
 	void bindGlobalMaps();
-	void renderScene(Scene* scene, Material* overrideMaterial = nullptr);
+	void renderScene(Scene* scene, Material* overrideMaterial = nullptr, bool passBaseMaterialProperties = false);
 };
 
 #endif // !SCENERENDERER_H
