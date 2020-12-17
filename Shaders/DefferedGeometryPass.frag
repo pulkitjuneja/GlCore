@@ -8,6 +8,8 @@ struct Material {
 	int specularCount;
 	sampler2D texture_diffuse[5];
 	sampler2D texture_specular[5];
+	sampler2D texture_normal;
+	int hasNormalMap;
 };
 
 struct PointLight {
@@ -40,6 +42,7 @@ in VS_OUT {
     vec3 worldPos;
     vec3 vertNormal;
     vec2 texCoords;
+	mat3 TBN;
 } vsOut;
 
 in vec3 FragPos;
@@ -51,7 +54,10 @@ void main()
     // store the fragment position vector in the first gbuffer texture
     gPosition = FragPos;
     // also store the per-fragment normals into the gbuffer
-    gNormal = normalize(vsOut.vertNormal);
+	vec3 normal = normalize(texture(material.texture_normal, vsOut.texCoords).rgb);
+	normal = normal * 2.0 - 1.0;   
+	normal = normalize(vsOut.TBN * normal); 
+    gNormal = mix(vsOut.vertNormal, normal, step(1.0f, material.hasNormalMap));
     // and the diffuse per-fragment color
     gAlbedoSpec.rgb = texture(material.texture_diffuse[0], vsOut.texCoords).rgb;
     // store specular intensity in gAlbedoSpec's alpha component

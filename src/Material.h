@@ -13,6 +13,7 @@ public:
 	Shader* getShader() { return shader; };
 	void setShader(Shader* shader) { this->shader = shader; };
 	std::vector<Texture*> textures;
+	Texture* normalMap;
 private:
 	Shader* shader;
 };

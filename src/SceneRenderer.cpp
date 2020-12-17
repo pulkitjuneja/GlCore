@@ -63,9 +63,10 @@ void SceneRenderer::renderScene(Scene * scene, Material* overrideMaterial, bool 
 
 			unsigned int diffuseNr = 0;
 			unsigned int specularNr = 0;
-
+			unsigned int hasNormals = 0;
+			int j = 0;
 			if (!overrideMaterial || (overrideMaterial && passBaseMaterialProperties)) {
-				for (int j = 0; j < currentSubMesh.material->textures.size(); j++) {
+				for (j= 0; j < currentSubMesh.material->textures.size(); j++) {
 					Texture* currentTexture = currentSubMesh.material->textures[j];
 					string name, number;
 					if (currentTexture->type == TextureType::DIFFUSE) {
@@ -80,7 +81,12 @@ void SceneRenderer::renderScene(Scene * scene, Material* overrideMaterial, bool 
 					currentTexture->bind(GL_TEXTURE0 + j);
 					currentShader->setInt("material." + name + "[" + number + "]", j);
 				}
-
+				if (currentSubMesh.material->normalMap != NULL) {
+					currentSubMesh.material->normalMap->bind(GL_TEXTURE0 + j);
+					currentShader->setInt("material.texture_normal", j);
+					hasNormals = 1;
+				}
+				currentShader->setInt("material.hasNormalMap", hasNormals);
 				currentShader->setInt("material.specularCount", specularNr);
 				currentShader->setInt("material.diffuseCount", diffuseNr);
 			}

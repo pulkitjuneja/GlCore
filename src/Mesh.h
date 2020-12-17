@@ -37,7 +37,8 @@ public:
 		std::vector<unsigned int> &indices,
 		std::vector<SubMesh> &subMeshes,
 		bool hasNormals,
-		bool hasTextCoords
+		bool hasTextCoords,
+		bool hasTangents
 	);
 	
 	GLuint VBO, VAO, EBO;
@@ -46,6 +47,7 @@ public:
 	std::vector<SubMesh> subMeshes;
 	bool hasNormals;
 	bool hasTexCoords;
+	bool hasTangents;
 
     void setupMesh();
 	void updateBuffers(std::vector<Vertex>& vertices, glm::vec3* indices);
