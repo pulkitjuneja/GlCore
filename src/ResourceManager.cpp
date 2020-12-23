@@ -178,6 +178,7 @@ Mesh *ResourceManager::loadMesh(string path, int loaderFlags)
 	bool hasNormals = true;
 	bool hasTexCoords = true;
 	bool hasTangents = true;
+	bool hasBiTangents = true;
 
 	submeshes.resize(scene->mNumMaterials-1);
 
@@ -208,6 +209,8 @@ Mesh *ResourceManager::loadMesh(string path, int loaderFlags)
 		for (int j = 0; j < currentMesh->mNumVertices; j++)
 		{
 			Vertex vertex;
+			glm::vec3 tangent;
+			glm::vec3 biTangent;
 			vertex.position = glm::vec3(currentMesh->mVertices[j].x, currentMesh->mVertices[j].y, currentMesh->mVertices[j].z);
 			if (hasNormals && currentMesh->mNormals != nullptr) {
 				vertex.normals = glm::vec3(currentMesh->mNormals[j].x, currentMesh->mNormals[j].y, currentMesh->mNormals[j].z);
@@ -216,8 +219,13 @@ Mesh *ResourceManager::loadMesh(string path, int loaderFlags)
 				vertex.texCoords = glm::vec2(currentMesh->mTextureCoords[0][j].x, currentMesh->mTextureCoords[0][j].y);
 			}
 			if (hasTangents && currentMesh->mTangents != nullptr) {
-				vertex.tangent = glm::vec3(currentMesh->mTangents[j].x, currentMesh->mTangents[j].y, currentMesh->mTangents[j].z);
+				tangent = glm::vec3(currentMesh->mTangents[j].x, currentMesh->mTangents[j].y, currentMesh->mTangents[j].z);
 			}
+			if (hasBiTangents && currentMesh->mBitangents != nullptr) {
+				biTangent = glm::vec3(currentMesh->mBitangents[j].x, currentMesh->mBitangents[j].y, currentMesh->mBitangents[j].z);
+			}
+			float handedness = glm::dot(glm::cross(tangent, biTangent), vertex.normals);
+			vertex.tangent = glm::vec4(tangent.x, tangent.y, tangent.z, handedness < 0 ? -1: 1);
 
 			vertices.push_back(vertex);
 		}
@@ -251,24 +259,9 @@ Material * ResourceManager::getAiSceneMaterial(const aiScene * scene, int materi
 	{
 		material->setShader(getShader("texturedMeshShader"));
 		aiMaterial *aiMaterial = scene->mMaterials[materialIndex];
-
-		//aiString heightTexPath, dispTexPath, bumpTexturePath;
-		//aiMaterial->GetTexture(aiTextureType_HEIGHT, 0, &heightTexPath);
-		//cout << "heightTexture : " << heightTexPath.C_Str() << "\n";
-		//aiMaterial->GetTexture(aiTextureType_DISPLACEMENT, 0, &dispTexPath);
-		//cout << "dispTexture : " << dispTexPath.C_Str() << "\n";
-		//aiMaterial->GetTexture(aiTextureType_NORMALS, 0, &bumpTexturePath);
-		//cout << "normalsTexture : " << bumpTexturePath.C_Str() << "\n";
-
-		std::vector<Texture *> diffuseMaps = loadMaterialTextures(aiMaterial, aiTextureType_DIFFUSE, directory);
-		material->textures.insert(material->textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-		vector<Texture *> specularMaps = loadMaterialTextures(aiMaterial, aiTextureType_SPECULAR, directory);
-		material->textures.insert(material->textures.end(), specularMaps.begin(), specularMaps.end());
-		vector<Texture *> normalMaps = loadMaterialTextures(aiMaterial, aiTextureType_HEIGHT, directory);
-		material->textures.insert(material->textures.end(), normalMaps.begin(), normalMaps.end());
-
+		material->diffuseMap = loadMaterialTexture(aiMaterial, aiTextureType_DIFFUSE, directory);
+		material->specularMap = loadMaterialTexture(aiMaterial, aiTextureType_SPECULAR, directory);
 		material->normalMap = loadMaterialTexture(aiMaterial, aiTextureType_HEIGHT, directory);
-
 	}
 
 	else

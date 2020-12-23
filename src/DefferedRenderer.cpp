@@ -71,7 +71,6 @@ void DefferedRenderer::setupGBuffer()
 	gBufferColorTexture->setMinMagFilter(GL_NEAREST, GL_NEAREST);
 	gBuffer->attachRenderTarget(gBufferColorTexture, 0, 2);
 
-
 	// TODO: use this buffer to reconstruct world position 
 	// gBUfferDepthTexture = ResourceManager::getInstance()->generateTexture(G_BUFFER_DEPTH_TEXTURE_NAME, TextureType::DEPTH,
 	// 	SCREEN_WIDTH, SCREEN_HEIGHT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT, 1);

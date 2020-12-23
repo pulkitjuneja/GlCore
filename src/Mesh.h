@@ -38,8 +38,7 @@ public:
 		std::vector<SubMesh> &subMeshes,
 		bool hasNormals,
 		bool hasTextCoords,
-		bool hasTangents
-	);
+		bool hasTangents);
 	
 	GLuint VBO, VAO, EBO;
 	std::vector<unsigned int> indices;

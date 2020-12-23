@@ -23,8 +23,12 @@ void Mesh::setupMesh() {
 	}
 	if (hasTangents) {
 		glEnableVertexAttribArray(3);
-		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tangent));
+		glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tangent));
 	}
+	//if (hasBiTangents) {
+	//	glEnableVertexAttribArray(4);
+	//	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, biTangent));
+	//}
 	glBindVertexArray(0);
 }
 
