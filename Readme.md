@@ -7,6 +7,7 @@ A minimal opengl based rendering engine
 * Resource Management (mesh, texture, shaders, materials)
 * Camera class
 * Different Light casters (Directional light, point light, spot light)
+* Normal mapping
 * Cascaded shadow maps with PCF
 * Deffered shading path with instanced light volumes
 
