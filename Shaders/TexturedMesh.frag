@@ -1,10 +1,11 @@
 #version 330 core
 
 struct Material {
-	int diffuseCount;
-	int specularCount;
-	sampler2D texture_diffuse[5];
-	sampler2D texture_specular[5];
+	sampler2D texture_diffuse;
+	sampler2D texture_specular;
+	sampler2D texture_normal;
+	int hasSpecularMap;
+	int hasNormalMap;
 };
 
 struct PointLight {
@@ -44,6 +45,7 @@ in VS_OUT {
     vec3 worldPos;
     vec3 vertNormal;
     vec2 texCoords;
+	mat3 TBN;
 } vsOut;
 
 
@@ -53,16 +55,9 @@ uniform Material material;
 
 out vec4 FragColor;
 
-vec3 calculatePointLight (PointLight pointLight, vec3 normal, vec3 viewDir) {
+vec3 calculatePointLight (PointLight pointLight, vec3 normal, vec3 viewDir, vec3 diffuseColor, float specularIntensity) {
 
-	vec3 diffuseColor = vec3(texture(material.texture_diffuse[0],vsOut.texCoords));
-	float specularStrength;
-
-	if(material.specularCount > 0) {
-		specularStrength  = texture(material.texture_specular[0], vsOut.texCoords).r * 2;
-	} else {
-		specularStrength = 0.1;
-	}
+	float specularStrength = mix(0.1, specularIntensity, step(1.0f, material.hasSpecularMap));
 
 	vec3 lightDir = normalize(pointLight.position.xyz - vsOut.worldPos);
 	float diff = max(dot(normal, lightDir), 0.0);
@@ -78,6 +73,7 @@ vec3 calculatePointLight (PointLight pointLight, vec3 normal, vec3 viewDir) {
 
 	return (ambient + diffuse + specular);
 }
+
 
 float ShadowCalculation(float fragDepth, vec3 normal, vec3 lightDirection)
 {
@@ -108,45 +104,34 @@ float ShadowCalculation(float fragDepth, vec3 normal, vec3 lightDirection)
 	shadow /= 9.0;
 
 	return shadow;
-//	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;aa
+}
+
+//vec3 debug_color(float fragDepth)
+//{
+//	int index = 0;
+//
+//	// Find shadow cascade.
+//	for (int i = 0; i < splitCount - 1; i++)
+//	{
+//		if (fragDepth > farBounds[i])
+//			index = i + 1;
 //	}
-//	shadowFactor /= 9.0;
-//	 return shadowFactor;
-}
+//
+//	if (index == 0)
+//		return vec3(0.5, 0.0, 0.0);
+//	else if (index == 1)
+//		return vec3(0.0, 0.5, 0.0);
+//	else if (index == 2)
+//		return vec3(0.0, 0.0, 0.5);
+//	else
+//		return vec3(2.0, 1.0, 1.0);
+//}
 
-vec3 debug_color(float fragDepth)
-{
-	int index = 0;
-
-	// Find shadow cascade.
-	for (int i = 0; i < splitCount - 1; i++)
-	{
-		if (fragDepth > farBounds[i])
-			index = i + 1;
-	}
-
-	if (index == 0)
-		return vec3(0.5, 0.0, 0.0);
-	else if (index == 1)
-		return vec3(0.0, 0.5, 0.0);
-	else if (index == 2)
-		return vec3(0.0, 0.0, 0.5);
-	else
-		return vec3(2.0, 1.0, 1.0);
-}
-
-vec3 calculateDirectionalLight (vec3 normal, vec3 viewDir) {
+vec3 calculateDirectionalLight (vec3 normal, vec3 viewDir, vec3 diffuseColor, float specularIntensity) {
 	vec4 clipPos = projectionMatrix * viewMatrix * vec4(vsOut.worldPos, 1.0);
 	float fragDepth = (clipPos.z/ clipPos.w) * 0.5 + 0.5;
-	vec3 diffuseColor = vec3(texture(material.texture_diffuse[0],vsOut.texCoords));
 	//vec3 diffuseColor = debug_color(fragDepth);
-	float specularStrength;
-
-	if(material.specularCount > 0) {
-		specularStrength  = texture(material.texture_specular[0], vsOut.texCoords).r * 2;
-	} else {
-		specularStrength = 0.1;
-	}
+	float specularStrength = mix(0.1, specularIntensity, step(1.0f, material.hasSpecularMap));
 
 	vec3 lightDir = normalize(-directionalLight.direction.xyz);
     float diff = max(dot(normal, lightDir), 0.0);
@@ -164,14 +149,22 @@ vec3 calculateDirectionalLight (vec3 normal, vec3 viewDir) {
 
 void main()
 {
-	vec3 normal = normalize(vsOut.vertNormal);
+	vec4 diffuseColor = texture(material.texture_diffuse, vsOut.texCoords);
+	float specularIntensity = texture(material.texture_specular, vsOut.texCoords).r;
+	if(diffuseColor.a == 0 && (material.hasSpecularMap ==0 || specularIntensity < 0)) {
+		discard;
+	}
+	vec3 normal = texture(material.texture_normal, vsOut.texCoords).rgb;
+	normal = normal * 2.0 - 1.0f;
+	normal = normalize(vsOut.TBN * normal);
+	normal = mix(vsOut.vertNormal, normal, step(1.0f, material.hasNormalMap));
 	vec3 viewDir = normalize(vec3(cameraPosition) - vsOut.worldPos);
 	vec3 result = vec3(0,0,0);
 
-	result += calculateDirectionalLight(normal, viewDir);
+	result += calculateDirectionalLight(normal, viewDir, diffuseColor.xyz, specularIntensity);
 
 	for(int i = 0; i < pointLightCount; i++) {
-		result += calculatePointLight(pointLights[i], normal, viewDir);
+		result += calculatePointLight(pointLights[i], normal, viewDir,  diffuseColor.xyz, specularIntensity);
 	}
 
 	FragColor = vec4(result,1.0);

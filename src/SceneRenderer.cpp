@@ -60,7 +60,6 @@ void SceneRenderer::renderScene(Scene * scene, Material* overrideMaterial, bool 
 			}
 
 			currentShader->use();
-
 			currentShader->setMat4("modelMatrix", modelMatrix);
 			//currentShader->setMat4("normalMatrix", glm::transpose(glm::inverse(modelMatrix)));
 

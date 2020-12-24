@@ -50,15 +50,15 @@ uniform Material material;
 
 void main()
 {    
-    // store the fragment position vector in the first gbuffer texture
-    gPosition = FragPos;
-    // also store the per-fragment normals into the gbuffer
 	vec3 normal = texture(material.texture_normal, vsOut.texCoords).rgb;
 	normal = normal * 2.0 - 1.0f;
 	normal = normalize(vsOut.TBN * normal); 
+	vec4 diffuseColor = texture(material.texture_diffuse, vsOut.texCoords);
+	float specularIntensity = texture(material.texture_specular, vsOut.texCoords).r;
+	if(diffuseColor.a == 0 && (material.hasSpecularMap ==0 || specularIntensity < 0)) {
+		discard;
+	}
+	gPosition = FragPos;
     gNormal = mix(vsOut.vertNormal, normal, step(1.0f, material.hasNormalMap));
-    // and the diffuse per-fragment color
-    gAlbedoSpec.rgb = texture(material.texture_diffuse, vsOut.texCoords).rgb;
-    // store specular intensity in gAlbedoSpec's alpha component
-    gAlbedoSpec.a = mix(0.1f, texture(material.texture_specular, vsOut.texCoords).r, step(1.0f, material.hasSpecularMap));
+	gAlbedoSpec = vec4(diffuseColor.xyz, mix(0.1f, specularIntensity, step(1.0f, material.hasSpecularMap)));
 }

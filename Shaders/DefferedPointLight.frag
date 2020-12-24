@@ -39,10 +39,10 @@ flat in int lightIndex;
 void main () {
 	vec2 fragTexcoords = (fragPos.xy / fragPos.w) * 0.5 + 0.5;
 	vec4 colorData = texture(albedoTexture,fragTexcoords);
+	vec3 worldPos = texture(positionTexture, fragTexcoords).xyz;
+	vec3 worldNormal = texture(normalTexture, fragTexcoords).xyz;
 	vec3 diffuseColor = colorData.xyz;
 	float specularStrength = colorData.w;
-	vec3 worldNormal = texture(normalTexture, fragTexcoords).xyz;
-	vec3 worldPos = texture(positionTexture, fragTexcoords).xyz;
 
 	vec3 lightPosition = pointLights[lightIndex].position.xyz;
 	float radius = pointLights[lightIndex].radius;
