@@ -177,6 +177,8 @@ Mesh *ResourceManager::loadMesh(string path, int loaderFlags)
 
 	bool hasNormals = true;
 	bool hasTexCoords = true;
+	bool hasTangents = true;
+	bool hasBiTangents = true;
 
 	submeshes.resize(scene->mNumMaterials-1);
 
@@ -207,15 +209,23 @@ Mesh *ResourceManager::loadMesh(string path, int loaderFlags)
 		for (int j = 0; j < currentMesh->mNumVertices; j++)
 		{
 			Vertex vertex;
+			glm::vec3 tangent;
+			glm::vec3 biTangent;
 			vertex.position = glm::vec3(currentMesh->mVertices[j].x, currentMesh->mVertices[j].y, currentMesh->mVertices[j].z);
-			if (hasNormals && currentMesh->mNormals != nullptr)
-			{
+			if (hasNormals && currentMesh->mNormals != nullptr) {
 				vertex.normals = glm::vec3(currentMesh->mNormals[j].x, currentMesh->mNormals[j].y, currentMesh->mNormals[j].z);
 			}
-			if (hasTexCoords && currentMesh->mTextureCoords[0])
-			{
+			if (hasTexCoords && currentMesh->mTextureCoords[0]) {
 				vertex.texCoords = glm::vec2(currentMesh->mTextureCoords[0][j].x, currentMesh->mTextureCoords[0][j].y);
 			}
+			if (hasTangents && currentMesh->mTangents != nullptr) {
+				tangent = glm::vec3(currentMesh->mTangents[j].x, currentMesh->mTangents[j].y, currentMesh->mTangents[j].z);
+			}
+			if (hasBiTangents && currentMesh->mBitangents != nullptr) {
+				biTangent = glm::vec3(currentMesh->mBitangents[j].x, currentMesh->mBitangents[j].y, currentMesh->mBitangents[j].z);
+			}
+			float handedness = glm::dot(glm::cross(tangent, biTangent), vertex.normals);
+			vertex.tangent = glm::vec4(tangent.x, tangent.y, tangent.z, handedness < 0 ? -1: 1);
 
 			vertices.push_back(vertex);
 		}
@@ -230,7 +240,7 @@ Mesh *ResourceManager::loadMesh(string path, int loaderFlags)
 		indexOffset += currentMesh->mNumFaces * 3;
 	}
 
-	Mesh *newMesh = new Mesh(vertices, indices, submeshes, hasNormals, hasTexCoords);
+	Mesh *newMesh = new Mesh(vertices, indices, submeshes, hasNormals, hasTexCoords, hasTangents);
 	newMesh->hasNormals = hasNormals;
 	newMesh->hasTexCoords = hasTexCoords;
 	loadedMeshes.insert(make_pair(path, newMesh));
@@ -249,11 +259,9 @@ Material * ResourceManager::getAiSceneMaterial(const aiScene * scene, int materi
 	{
 		material->setShader(getShader("texturedMeshShader"));
 		aiMaterial *aiMaterial = scene->mMaterials[materialIndex];
-
-		std::vector<Texture *> diffuseMaps = loadMaterialTextures(aiMaterial, aiTextureType_DIFFUSE, directory);
-		material->textures.insert(material->textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-		vector<Texture *> specularMaps = loadMaterialTextures(aiMaterial, aiTextureType_SPECULAR, directory);
-		material->textures.insert(material->textures.end(), specularMaps.begin(), specularMaps.end());
+		material->diffuseMap = loadMaterialTexture(aiMaterial, aiTextureType_DIFFUSE, directory);
+		material->specularMap = loadMaterialTexture(aiMaterial, aiTextureType_SPECULAR, directory);
+		material->normalMap = loadMaterialTexture(aiMaterial, aiTextureType_HEIGHT, directory);
 	}
 
 	else
@@ -305,4 +313,18 @@ std::vector<Texture *> ResourceManager::loadMaterialTextures(aiMaterial *aiMater
 	}
 
 	return textures;
+}
+
+Texture * ResourceManager::loadMaterialTexture(aiMaterial * aiMaterial, aiTextureType aiTextureType, string directory)
+{
+	aiString texturePath;
+	if (aiMaterial->GetTextureCount(aiTextureType) > 0) {
+		aiMaterial->GetTexture(aiTextureType, 0, &texturePath);
+		TextureType textureType = textureTypeMap[aiTextureType];
+		Texture *tex = loadTexture(texturePath.C_Str(), directory, textureType);
+		return tex;
+	}
+	else {
+		return NULL;
+	}
 }

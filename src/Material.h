@@ -12,7 +12,9 @@ public:
 	string name;
 	Shader* getShader() { return shader; };
 	void setShader(Shader* shader) { this->shader = shader; };
-	std::vector<Texture*> textures;
+	Texture* normalMap;
+	Texture* diffuseMap;
+	Texture* specularMap;
 private:
 	Shader* shader;
 };

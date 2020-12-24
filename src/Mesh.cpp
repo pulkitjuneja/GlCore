@@ -21,6 +21,14 @@ void Mesh::setupMesh() {
 		glEnableVertexAttribArray(2);
 		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoords));
 	}
+	if (hasTangents) {
+		glEnableVertexAttribArray(3);
+		glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tangent));
+	}
+	//if (hasBiTangents) {
+	//	glEnableVertexAttribArray(4);
+	//	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, biTangent));
+	//}
 	glBindVertexArray(0);
 }
 
@@ -28,11 +36,13 @@ Mesh::Mesh(std::vector<Vertex>& vertices,
 	std::vector<unsigned int>& indices, 
 	std::vector<SubMesh> & subMeshes, 
 	bool hasNormals,
-	bool hasTextCoords)
+	bool hasTextCoords,
+	bool hasTangents)
 {
 	// TODO: make this parameterized. Handle how vertex attributes will be space when somehting is not present.
 	this->hasNormals = hasNormals;
 	this->hasTexCoords = hasTexCoords;
+	this->hasTangents = hasTangents;
 
 	this->vertices = vertices;
 	this->indices = indices;

@@ -45,7 +45,7 @@ void DefferedRenderer::createUVSphere()
 	std::vector<SubMesh> submeshes;
 	submeshes.resize(1);
 	submeshes[0].indexCount = indices.size();
-	pointVolumeMesh = new Mesh(vertices, indices, submeshes, false, false);
+	pointVolumeMesh = new Mesh(vertices, indices, submeshes, false, false, false);
 }
 
 void DefferedRenderer::setupGBuffer()
@@ -71,14 +71,13 @@ void DefferedRenderer::setupGBuffer()
 	gBufferColorTexture->setMinMagFilter(GL_NEAREST, GL_NEAREST);
 	gBuffer->attachRenderTarget(gBufferColorTexture, 0, 2);
 
-
 	// TODO: use this buffer to reconstruct world position 
-	gBUfferDepthTexture = ResourceManager::getInstance()->generateTexture(G_BUFFER_DEPTH_TEXTURE_NAME, TextureType::DEPTH,
-		SCREEN_WIDTH, SCREEN_HEIGHT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT, 1);
-	gBUfferDepthTexture->bind();
-	gBUfferDepthTexture->setMinMagFilter(GL_LINEAR, GL_LINEAR);
-	gBUfferDepthTexture->setWrapping(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
-	gBuffer->attachDepthTarget(gBUfferDepthTexture, 0);
+	// gBUfferDepthTexture = ResourceManager::getInstance()->generateTexture(G_BUFFER_DEPTH_TEXTURE_NAME, TextureType::DEPTH,
+	// 	SCREEN_WIDTH, SCREEN_HEIGHT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT, 1);
+	// gBUfferDepthTexture->bind();
+	// gBUfferDepthTexture->setMinMagFilter(GL_LINEAR, GL_LINEAR);
+	// gBUfferDepthTexture->setWrapping(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
+	// gBuffer->attachDepthTarget(gBUfferDepthTexture, 0);
 
 	unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
 	glDrawBuffers(3, attachments);

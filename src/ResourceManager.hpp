@@ -42,7 +42,8 @@ private:
 
 	std::unordered_map <aiTextureType, TextureType, EnumClassHash> textureTypeMap = {
 		{aiTextureType_DIFFUSE, TextureType::DIFFUSE},
-		{aiTextureType_SPECULAR, TextureType::SPECULAR}
+		{aiTextureType_SPECULAR, TextureType::SPECULAR},
+		{aiTextureType_HEIGHT, TextureType::NORMAL}
 	};
 
 
@@ -51,6 +52,7 @@ private:
 
 	void readFromFile(const string &fileName, char* & shaderContent);
 	std::vector<Texture *> loadMaterialTextures(aiMaterial* aiMaterial, aiTextureType textureType, string directory);
+	Texture* loadMaterialTexture(aiMaterial* aiMaterial, aiTextureType textureType, string directory);
 	Material* getAiSceneMaterial(const aiScene* scene, int materialIndex, string directory);
 
 public:
@@ -61,7 +63,7 @@ public:
     Texture* loadTexture (const string& texturePath, const string& directory, TextureType textureType);
 	Texture* generateTexture(const string& identifier, TextureType textureType, const uint32_t& w,
 		const uint32_t& h, GLenum format, GLenum internalFormat, GLenum dataType, int arraySize);
-	Mesh* loadMesh(string path, int loaderFlags = aiProcess_Triangulate | aiProcess_FlipUVs);
+	Mesh* loadMesh(string path, int loaderFlags = aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
 	//Getters
 	Shader* getShader(const string &shaderName);
