@@ -6,7 +6,7 @@ uniform sampler2D positionTexture;
 uniform sampler2D normalTexture;
 uniform sampler2D albedoTexture;
 
-uniform sampler2DArray shadowMap;
+uniform sampler2DArrayShadow shadowMap;
 
 struct PointLight {
 	vec4 position;
@@ -66,17 +66,13 @@ float ShadowCalculation(vec3 worldPos, float fragDepth, vec3 normal, vec3 lightD
 	{
 	    for(int y = -1; y <= 1; ++y)
 	    {
-	        float pcfDepth = texture(shadowMap, vec3(lightSpacePos.xy + vec2(x, y) * texelSize, float(index))).r; 
-	        shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;        
+	        float pcfDepth = texture(shadowMap, vec4(lightSpacePos.xy + vec2(x, y) * texelSize, float(index), currentDepth - 0.0005)); 
+	        shadow += pcfDepth;     
 	    }    
 	}
 	shadow /= 9.0;
 
 	return shadow;
-//	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;aa
-//	}
-//	shadowFactor /= 9.0;
-//	 return shadowFactor;
 }
 
 void main()
