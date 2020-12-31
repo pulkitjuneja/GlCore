@@ -49,7 +49,7 @@ in VS_OUT {
 } vsOut;
 
 
-uniform sampler2DArray shadowMap;
+uniform sampler2DArrayShadow shadowMap;
 
 uniform Material material;
 
@@ -97,8 +97,8 @@ float ShadowCalculation(float fragDepth, vec3 normal, vec3 lightDirection)
 	{
 	    for(int y = -1; y <= 1; ++y)
 	    {
-	        float pcfDepth = texture(shadowMap, vec3(lightSpacePos.xy + vec2(x, y) * texelSize, float(index))).r; 
-	        shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;        
+	        float pcfDepth = texture(shadowMap, vec4(lightSpacePos.xy + vec2(x, y) * texelSize, float(index), currentDepth - 0.0005)); 
+	        shadow += pcfDepth;         
 	    }    
 	}
 	shadow /= 9.0;

@@ -18,9 +18,8 @@
 
 		 // practical split scheme: https://developer.nvidia.com/gpugems/gpugems3/gpugems3_ch10.html
 		 float t_near = lambda * (nd * powf(ratio, si)) + (1 - lambda) * (nd + (fd - nd) * si);
-		 float t_far = t_near * 1.005f;
 		 splits[i].nearPlane = t_near;
-		 splits[i - 1].farPlane = t_far;
+		 splits[i - 1].farPlane = t_near;
 	 }
 	 splits[splitCount-1].farPlane = fd;
 
@@ -68,7 +67,7 @@
  void Csm::updateTextureMatrix(Camera * camera)
  {
 	 for (int i = 0; i < splitCount; i++) {
-		 textureMatrices[i] = biasMatrix * cropMatrices[i];
+		 textureMatrices[i] = biasMatrix * cropMatrices[i];	
 	 }
  }
 
@@ -124,10 +123,10 @@
 		 glm::vec3 cascade_extents = max - min;
 
 		 // Push the light position back along the light direction by the near offset.
-		 glm::vec3 shadow_camera_pos = frustum.center - lightDir * nearOffset;
+		 glm::vec3 shadow_camera_pos = frustum.center - lightDir * -min.z;
 
 		 // Add the near offset to the Z value of the cascade extents to make sure the orthographic frustum captures the entire frustum split (else it will exhibit cut-off issues).
-		 glm::mat4 ortho = glm::ortho(min.x, max.x, min.y, max.y, -nearOffset, nearOffset + cascade_extents.z);
+		 glm::mat4 ortho = glm::ortho(min.x, max.x, min.y, max.y, -nearOffset,  cascade_extents.z);
 		 glm::mat4 view = glm::lookAt(shadow_camera_pos, frustum.center, camera->cameraUP);
 
 		 projectionMatrices[i] = ortho;
@@ -232,6 +231,8 @@
 	 shadowMaps->bind(GL_TEXTURE0 + 10);
 	 shadowMaps->setMinMagFilter(GL_LINEAR, GL_LINEAR);
 	 shadowMaps->setWrapping(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
+	 glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+	 glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_COMPARE_FUNC, GL_GEQUAL);
 
 	 for (int i = 0; i < splitCount; i++) {
 		 shadowFbos[i] = new FrameBuffer();

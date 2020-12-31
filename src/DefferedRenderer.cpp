@@ -71,14 +71,6 @@ void DefferedRenderer::setupGBuffer()
 	gBufferColorTexture->setMinMagFilter(GL_NEAREST, GL_NEAREST);
 	gBuffer->attachRenderTarget(gBufferColorTexture, 0, 2);
 
-	// TODO: use this buffer to reconstruct world position 
-	// gBUfferDepthTexture = ResourceManager::getInstance()->generateTexture(G_BUFFER_DEPTH_TEXTURE_NAME, TextureType::DEPTH,
-	// 	SCREEN_WIDTH, SCREEN_HEIGHT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT, 1);
-	// gBUfferDepthTexture->bind();
-	// gBUfferDepthTexture->setMinMagFilter(GL_LINEAR, GL_LINEAR);
-	// gBUfferDepthTexture->setWrapping(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
-	// gBuffer->attachDepthTarget(gBUfferDepthTexture, 0);
-
 	unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
 	glDrawBuffers(3, attachments);
 
@@ -90,7 +82,7 @@ void DefferedRenderer::setupGBuffer()
 DefferedRenderer::DefferedRenderer()
 {	
 	setupGBuffer();
-	csm = new Csm(0.3, 350.0f, 4, 4096);
+	csm = new Csm(0.03, 150.0f, 3, 4096	);
 	perFrameUbo = new UniformBuffer(sizeof(PerFrameUniforms), 0);
 	CsmUbo = new UniformBuffer(sizeof(CSMUniforms), 1);
 
