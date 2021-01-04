@@ -71,23 +71,36 @@ void DefferedRenderer::setupGBuffer()
 	gBufferColorTexture->setMinMagFilter(GL_NEAREST, GL_NEAREST);
 	gBuffer->attachRenderTarget(gBufferColorTexture, 0, 2);
 
-	unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
-	glDrawBuffers(3, attachments);
-
 	gBuffer->attachRenderBuffer(GL_DEPTH_COMPONENT, GL_DEPTH_ATTACHMENT, SCREEN_WIDTH, SCREEN_HEIGHT);
 	gBuffer->checkStatus();
 	gBuffer->unBind();
 }
 
+void DefferedRenderer::setupHDRBuffer()
+{
+	HDRBBuffer = new FrameBuffer();
+	HDRBBuffer->bind();
+
+	HDRBUfferTexture = ResourceManager::getInstance()->generateTexture(HDR_BUFFER_TEXTURE_NAME, TextureType::DIFFUSE,
+		SCREEN_WIDTH, SCREEN_HEIGHT, GL_RGBA, GL_RGBA16F, GL_FLOAT, 1);
+	HDRBUfferTexture->bind();
+	HDRBUfferTexture->setMinMagFilter(GL_NEAREST, GL_NEAREST);
+	HDRBBuffer->attachRenderTarget(HDRBUfferTexture, 0, 0);
+	HDRBBuffer->checkStatus();
+	HDRBBuffer->unBind();
+}
+
 DefferedRenderer::DefferedRenderer()
 {	
 	setupGBuffer();
-	csm = new Csm(0.03, 150.0f, 3, 4096	);
+	setupHDRBuffer();
+	csm = new Csm(0.3, 150.0f, 3, 4096);
 	perFrameUbo = new UniformBuffer(sizeof(PerFrameUniforms), 0);
 	CsmUbo = new UniformBuffer(sizeof(CSMUniforms), 1);
 
 	directionalLightShader = ResourceManager::getInstance()->getShader("defferedDirectionalLightPass");
 	pointLightShader = ResourceManager::getInstance()->getShader("defferedPointLightPass");
+	basicToneMappingShader = ResourceManager::getInstance()->getShader("basicToneMapping");
 
 	directionalLightShader->setInt("positionTexture", 11);
 	directionalLightShader->setInt("normalTexture", 12);
@@ -97,6 +110,7 @@ DefferedRenderer::DefferedRenderer()
 	pointLightShader->setInt("positionTexture", 11);
 	pointLightShader->setInt("normalTexture", 12);
 	pointLightShader->setInt("albedoTexture", 13);
+
 
 	// Create an empoty VAO to be bound when rendering screen quad
 	glGenVertexArrays(1, &screenQuadVAO);
@@ -113,6 +127,10 @@ void DefferedRenderer::setScene(Scene* scene)
 void DefferedRenderer::runGeometryPass()
 {
 	gBuffer->bind();
+
+	unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
+	glDrawBuffers(3, attachments);
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	Material* gBufferMaterial = new Material();
 	gBufferMaterial->setShader(ResourceManager::getInstance()->getShader("defferedGeometryPass"));
@@ -182,7 +200,23 @@ void DefferedRenderer::render()
 	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
 	runGeometryPass();
-	runDirectionalLightPass();
 
+	HDRBBuffer->bind();
+	unsigned int attachments[1] = { GL_COLOR_ATTACHMENT0 };
+	glDrawBuffers(1, attachments);
+	runDirectionalLightPass();
 	runPointLightPass();
+	HDRBBuffer->unBind();
+	toneMappingPass();
 }
+
+void DefferedRenderer::toneMappingPass()
+{
+	basicToneMappingShader->setInt("hdrBuffer", 14);
+	basicToneMappingShader->setFloat("exposure", 1.0f);
+	HDRBUfferTexture->bind(GL_TEXTURE0 + 14);
+	basicToneMappingShader->use();
+	glBindVertexArray(screenQuadVAO);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+}
+

@@ -44,6 +44,27 @@ layout (std140) uniform csmUniforms
 in vec2 fragTexcoords;
 in vec4 fragPos;
 
+vec3 debug_color(float fragDepth)
+{
+	int index = 0;
+
+	// Find shadow cascade.
+	for (int i = 0; i < splitCount - 1; i++)
+	{
+		if (fragDepth > farBounds[i])
+			index = i + 1;
+	}
+
+	if (index == 0)
+		return vec3(0.5, 0.0, 0.0);
+	else if (index == 1)
+		return vec3(0.0, 0.5, 0.0);
+	else if (index == 2)
+		return vec3(0.0, 0.0, 0.5);
+	else
+		return vec3(2.0, 1.0, 1.0);
+}
+
 float ShadowCalculation(vec3 worldPos, float fragDepth, vec3 normal, vec3 lightDirection)
 {
 	int index = 0 ;

@@ -7,6 +7,7 @@
 #define G_BUFFER_NORMAL_TEXTURE_NAME "gb_normal_texture"
 #define G_BUFFER_COLOR_TEXTURE_NAME "gb_color_texture"
 #define G_BUFFER_DEPTH_TEXTURE_NAME "gb_depth_texture"
+#define HDR_BUFFER_TEXTURE_NAME "hdr_buffer_texture"
 
 #include "Texture.h"
 #include "FrameBuffer.h"
@@ -22,6 +23,8 @@ class DefferedRenderer {
 	Texture* gBufferColorTexture;
 	Texture* gBufferNormalTexture;
 	Texture* gBUfferDepthTexture;
+	Texture* HDRBUfferTexture;
+	FrameBuffer* HDRBBuffer;
 	FrameBuffer* gBuffer;
 
 	//Uniforms
@@ -40,11 +43,14 @@ class DefferedRenderer {
 
 	Shader* directionalLightShader;
 	Shader* pointLightShader;
+	Shader* basicToneMappingShader;
 
 	void createUVSphere();
 	void setupGBuffer();
+	void setupHDRBuffer();
 public:
 	DefferedRenderer();
+	void toneMappingPass();
 	void runGeometryPass();
 	void runDirectionalLightPass();
 	void runPointLightPass();

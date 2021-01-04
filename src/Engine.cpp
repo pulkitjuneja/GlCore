@@ -14,6 +14,7 @@ void Engine::loadDefaultShaders()
 	ResourceManager::getInstance()->loadShader("Shaders/DefferedGeometryPass.vert", "Shaders/DefferedGeometryPass.frag", "defferedGeometryPass");
 	ResourceManager::getInstance()->loadShader("Shaders/DefferedDirectionalLight.vert", "Shaders/DefferedDirectionalLight.frag", "defferedDirectionalLightPass");
 	ResourceManager::getInstance()->loadShader("Shaders/DefferedPointLight.vert", "Shaders/DefferedPointLight.frag", "defferedPointLightPass");
+	ResourceManager::getInstance()->loadShader("Shaders/DefferedDirectionalLight.vert", "Shaders/HDRToneMapping.frag", "basicToneMapping");
 }
 
 void Engine::start() {

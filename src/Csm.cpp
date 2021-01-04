@@ -18,8 +18,9 @@
 
 		 // practical split scheme: https://developer.nvidia.com/gpugems/gpugems3/gpugems3_ch10.html
 		 float t_near = lambda * (nd * powf(ratio, si)) + (1 - lambda) * (nd + (fd - nd) * si);
+		 float t_far = t_near * 1.005f;
 		 splits[i].nearPlane = t_near;
-		 splits[i - 1].farPlane = t_near;
+		 splits[i - 1].farPlane = t_far;
 	 }
 	 splits[splitCount-1].farPlane = fd;
 
