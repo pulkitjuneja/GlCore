@@ -9,6 +9,8 @@ message ("Open gl libs" ${OPENGL_LIBRARIES})
 
 link_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}/ext/assimp/lib
+	${CMAKE_CURRENT_SOURCE_DIR}/ext/SFML/lib
+	${CMAKE_CURRENT_SOURCE_DIR}/ext/glew/lib
 )
 
 file(GLOB glcore_src
@@ -28,6 +30,8 @@ add_executable(GlCore ${glcore_src}
  
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/ext/glm)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/ext/SFML/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/ext/glew/include)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/ext/assimp/include)
 
 if(WIN32)
