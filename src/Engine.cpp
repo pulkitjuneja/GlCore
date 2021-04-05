@@ -15,6 +15,7 @@ void Engine::loadDefaultShaders()
 	ResourceManager::getInstance()->loadShader("Shaders/DefferedDirectionalLight.vert", "Shaders/DefferedDirectionalLight.frag", "defferedDirectionalLightPass");
 	ResourceManager::getInstance()->loadShader("Shaders/DefferedPointLight.vert", "Shaders/DefferedPointLight.frag", "defferedPointLightPass");
 	ResourceManager::getInstance()->loadShader("Shaders/DefferedDirectionalLight.vert", "Shaders/HDRToneMapping.frag", "basicToneMapping");
+    ResourceManager::getInstance()->loadShader("Shaders/DefferedDirectionalLight.vert", "Shaders/SSRPass.frag", "ssrPass");
 }
 
 void Engine::start() {
@@ -54,7 +55,7 @@ void Engine::start() {
         timeSinceStart += deltaTime;
         update();
 
-		defferedRenderer->render();
+        defferedRenderer->render();
 
         window->display( );
     }
@@ -74,7 +75,7 @@ bool Engine::setupSFML() {
     settings.attributeFlags = sf::ContextSettings::Core;
 
     window = new sf::Window( sf::VideoMode( SCREEN_WIDTH, SCREEN_HEIGHT, 64 ), "OpenGL SFML", sf::Style::Titlebar | sf::Style::Close, settings );
-	window->setVerticalSyncEnabled(false);
+	window->setVerticalSyncEnabled(true);
     glewExperimental = GL_TRUE;
 
     if ( GLEW_OK != glewInit( ) )

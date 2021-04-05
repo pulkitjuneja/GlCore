@@ -22,6 +22,14 @@ struct DirectionalLight {
 	vec4 ambient;
 };
 
+out VS_OUT {
+    vec3 worldPos;
+    vec3 vertNormal;
+    vec2 texCoords;
+	mat3 TBN;
+} vsOut;
+
+
 // TODO: create a different uniform structured for deffered
 layout (std140) uniform perFrameUniforms
 {
@@ -34,12 +42,7 @@ layout (std140) uniform perFrameUniforms
 	int pointLightCount;
 };
 
-out VS_OUT {
-    vec3 worldPos;
-    vec3 vertNormal;
-    vec2 texCoords;
-	mat3 TBN;
-} vsOut;
+ 
 
 out vec3 FragPos;
 
@@ -47,7 +50,7 @@ void main() {
 	vec4 homogenousVertexPosition = vec4(position, 1.0);
 	vsOut.texCoords = texCoords;
 	vsOut.worldPos = vec3(modelMatrix* homogenousVertexPosition);
-	mat3 normalMatrix = transpose(inverse(mat3(modelMatrix)));
+	mat3 normalMatrix = mat3(modelMatrix);
 	vec3 T = normalize(vec3(modelMatrix * vec4(tangent.xyz,1.0)));
 	vec3 N = normalize(normalMatrix * normal);
 	vsOut.vertNormal = N;

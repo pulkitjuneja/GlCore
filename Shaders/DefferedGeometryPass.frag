@@ -53,12 +53,13 @@ void main()
 	vec3 normal = texture(material.texture_normal, vsOut.texCoords).rgb;
 	normal = normal * 2.0 - 1.0f;
 	normal = normalize(vsOut.TBN * normal); 
+	// normal = mat3(viewMatrix) * normal; 
 	vec4 diffuseColor = texture(material.texture_diffuse, vsOut.texCoords);
 	float specularIntensity = texture(material.texture_specular, vsOut.texCoords).r;
 	if(diffuseColor.a == 0 && (material.hasSpecularMap ==0 || specularIntensity < 0)) {
 		discard;
 	}
 	gPosition = FragPos;
-    gNormal = mix(vsOut.vertNormal, normal, step(1.0f, material.hasNormalMap));
+    gNormal = vsOut.vertNormal;//mix(vsOut.vertNormal, normal, step(1.0f, material.hasNormalMap));
 	gAlbedoSpec = vec4(diffuseColor.xyz, mix(0.1f, specularIntensity, step(1.0f, material.hasSpecularMap)));
 }

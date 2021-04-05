@@ -98,12 +98,14 @@ float ShadowCalculation(vec3 worldPos, float fragDepth, vec3 normal, vec3 lightD
 
 void main()
 {   
-	vec3 worldPos = texture(positionTexture, fragTexcoords).xyz;
-	vec3 worldNormal = texture(normalTexture, fragTexcoords).xyz;
+	vec2 texSize = textureSize(positionTexture, 0).xy;
+	vec2 texCoord = gl_FragCoord.xy / texSize;
+	vec3 worldPos = texture(positionTexture, texCoord).xyz;
+	vec3 worldNormal = texture(normalTexture, texCoord).xyz;
 	vec3 viewDir = normalize(vec3(cameraPosition) - worldPos);
 	vec4 clipPos = projectionMatrix * viewMatrix * vec4(worldPos, 1.0);
 	float fragDepth = (clipPos.z/ clipPos.w) * 0.5 + 0.5;
-	vec4 colorData = texture(albedoTexture,fragTexcoords); 
+	vec4 colorData = texture(albedoTexture,texCoord); 
 	vec3 diffuseColor = colorData.xyz;
 	float specularStrength = colorData.w;
 	vec3 lightDir = normalize(-directionalLight.direction.xyz);

@@ -240,6 +240,8 @@
 		 shadowFbos[i]->bind();
 		 shadowFbos[i]->attachDepthTarget(shadowMaps, 0, i, true);
 	 }
+	 shadowFbos[splitCount - 1]->unBind();
+	 shadowMaps->Unbind();
 	 biasMatrix = glm::mat4(0.5f, 0.0f, 0.0f, 0.0f,
 		 0.0f, 0.5f, 0.0f, 0.0f,
 		 0.0f, 0.0f, 0.5f, 0.0f,

@@ -299,22 +299,6 @@ Shader *ResourceManager::getShader(const string& shaderName)
 	}
 }
 
-std::vector<Texture *> ResourceManager::loadMaterialTextures(aiMaterial *aiMaterial, aiTextureType aiTextureType, string directory)
-{
-	vector<Texture *> textures;
-
-	for (int i = 0; i < aiMaterial->GetTextureCount(aiTextureType); i++)
-	{
-		aiString texturePath;
-		aiMaterial->GetTexture(aiTextureType, i, &texturePath);
-		TextureType textureType = textureTypeMap[aiTextureType];
-		Texture *tex = loadTexture(texturePath.C_Str(), directory, textureType);
-		textures.push_back(tex);
-	}
-
-	return textures;
-}
-
 Texture * ResourceManager::loadMaterialTexture(aiMaterial * aiMaterial, aiTextureType aiTextureType, string directory)
 {
 	aiString texturePath;

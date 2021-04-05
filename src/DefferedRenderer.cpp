@@ -88,6 +88,18 @@ void DefferedRenderer::setupHDRBuffer()
 	HDRBBuffer->attachRenderTarget(HDRBUfferTexture, 0, 0);
 	HDRBBuffer->checkStatus();
 	HDRBBuffer->unBind();
+
+	postProcessingBuffer = new FrameBuffer();
+	postProcessingBuffer->bind();
+	postProcessingTexture = ResourceManager::getInstance()->generateTexture(PP_BUFFER_TEXTURE_NAME, TextureType::DIFFUSE,
+		SCREEN_WIDTH, SCREEN_HEIGHT, GL_RGBA, GL_RGBA, GL_FLOAT, 1);
+	postProcessingTexture->bind();
+	postProcessingTexture->setMinMagFilter(GL_NEAREST, GL_NEAREST);
+	postProcessingBuffer->attachRenderTarget(postProcessingTexture, 0, 0);
+	std::cout << "pptt" << postProcessingTexture->textureId<<"\n";
+	postProcessingBuffer->checkStatus();
+	postProcessingBuffer->unBind();
+
 }
 
 DefferedRenderer::DefferedRenderer()
@@ -101,6 +113,7 @@ DefferedRenderer::DefferedRenderer()
 	directionalLightShader = ResourceManager::getInstance()->getShader("defferedDirectionalLightPass");
 	pointLightShader = ResourceManager::getInstance()->getShader("defferedPointLightPass");
 	basicToneMappingShader = ResourceManager::getInstance()->getShader("basicToneMapping");
+	ssr = ResourceManager::getInstance()->getShader("ssrPass");
 
 	directionalLightShader->setInt("positionTexture", 11);
 	directionalLightShader->setInt("normalTexture", 12);
@@ -111,6 +124,9 @@ DefferedRenderer::DefferedRenderer()
 	pointLightShader->setInt("normalTexture", 12);
 	pointLightShader->setInt("albedoTexture", 13);
 
+	ssr->setInt("positionTexture", 11);
+	ssr->setInt("normalTexture", 12);
+	ssr->setInt("albedoTexture", 13);
 
 	// Create an empoty VAO to be bound when rendering screen quad
 	glGenVertexArrays(1, &screenQuadVAO);
@@ -172,7 +188,7 @@ void DefferedRenderer::runPointLightPass()
 }
 
 void DefferedRenderer::render()
-{
+{	
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -206,8 +222,21 @@ void DefferedRenderer::render()
 	glDrawBuffers(1, attachments);
 	runDirectionalLightPass();
 	runPointLightPass();
-	HDRBBuffer->unBind();
+	postProcessingBuffer->bind();
 	toneMappingPass();
+	postProcessingTexture->bind(GL_TEXTURE0 + 15);
+	ssr->setInt("finalImageBuffer", 15);
+	postProcessingBuffer->unBind();
+
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	ssr->use();
+
+	glBindVertexArray(screenQuadVAO);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+	//toneMappingPass();
 }
 
 void DefferedRenderer::toneMappingPass()
